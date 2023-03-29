@@ -9,7 +9,7 @@ RUN mkdir -p /app/diplom/netology_pd_diplom
 RUN mkdir -p /app/diplom/backend
 ADD ./* /app
 ADD ./diplom/netology_pd_diplom /app/diplom/netology_pd_diplom
-ADD ./app/diplom/backend /app/app/diplom/backend
+ADD ./app/diplom/backend /app/diplom/backend
 RUN ls -lrt /app
 RUN pip install -r requirements.txt
 RUN python manage.py makemigrations
