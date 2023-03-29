@@ -8,8 +8,8 @@ networks:
   postgres_network:
     driver: bridge
 services:
-  nginx_proxy:
-    container_name: nginx_proxy
+  nginx:
+    container_name: nginx
     build: ./nginx
     restart: unless-stopped
     ports:
