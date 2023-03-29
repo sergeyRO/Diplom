@@ -27,7 +27,7 @@ services:
     env_file:
       - ./.envDB
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d netology_stocks_products"]
+      test: ["CMD-SHELL", "pg_isready -U postgres -d diplom_db"]
       interval: 10s
       timeout: 5s
       retries: 5
