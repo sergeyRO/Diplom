@@ -44,8 +44,7 @@ INSTALLED_APPS = [
     'backend.apps.BackendConfig',
     'rest_framework',
     'rest_framework.authtoken',
-    'django_rest_passwordreset',
-    'backend'
+    'django_rest_passwordreset'
 ]
 
 MIDDLEWARE = [
