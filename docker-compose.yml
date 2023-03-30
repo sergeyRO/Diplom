@@ -43,7 +43,7 @@ services:
     build:
       dockerfile: Dockerfile
     restart: unless-stopped
-    command: sh -c "python ./manage.py migrate && python ./manage.py collectstatic && gunicorn netology_pd_diplom.wsgi:application --bind 0.0.0.0:8000 --workers=4"
+    command: sh -c "python3 ./manage.py migrate && python3 ./manage.py collectstatic && gunicorn netology_pd_diplom.wsgi:application --bind 0.0.0.0:8000 --workers=4"
     ports:
       - "8000:8000"
     depends_on:
