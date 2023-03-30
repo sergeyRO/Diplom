@@ -12,7 +12,7 @@ ADD ./diplom/netology_pd_diplom /app/diplom/netology_pd_diplom
 ADD ./diplom/backend /app/diplom/backend
 RUN ls -lrt /app
 RUN pip install -r requirements.txt
-#RUN python ./manage.py makemigrations
+RUN python ./manage.py makemigrations
 EXPOSE 8000
 
 
