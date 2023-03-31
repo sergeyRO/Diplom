@@ -35,13 +35,13 @@ services:
     ports:
       - 1333:80
     depends_on:
-      - diplom
+      - web
     networks:
       - nginx_network
     volumes:
       - static_volume:/app/staticfiles/
 
-  diplom:
+  web:
     container_name: diplom
     build:
       dockerfile: Dockerfile
