@@ -45,6 +45,7 @@ class RegisterAccount(APIView):
                 return JsonResponse({'Status': False, 'Errors': {'password': error_array}})
             else:
                 # проверяем данные для уникальности имени пользователя
+                print(request.data._mutable)
                 request.data._mutable = True
                 request.data.update({})
                 user_serializer = UserSerializer(data=request.data)
