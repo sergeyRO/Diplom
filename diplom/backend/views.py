@@ -168,7 +168,7 @@ class ShopView(ListAPIView):
 
 class ProductInfoView(APIView):
     """
-    Класс для поиска товаров и создания товара
+    Класс для поиска товаров
     """
 
     def get(self, request, *args, **kwargs):
@@ -500,17 +500,20 @@ class ParameterView(APIView):
     '''
     def get(self, request, *args, **kwargs):
         auth_user(request.user.is_authenticated)
-        parameter = Parameter.objects.all()
-        serializer = ParameterSerializer(parameter)
+        if request.user.type != 'shop':
+            return JsonResponse({'Status': False, 'Error': 'Только для магазинов'}, status=403)
+        Parameter.objects.all()
+        serializer = ParameterSerializer
         return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):
         auth_user(request.user.is_authenticated)
-        serializer = ParameterSerializer(data=request.data)
-
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse({'Status': True})
+        if request.user.type != 'shop':
+            return JsonResponse({'Status': False, 'Error': 'Только для магазинов'}, status=403)
+        id = Parameter.objects.update_or_create(request.data)
+        Parameter.objects.filter(id=id[0].id)
+        serializer = ParameterSerializer
+        return Response(serializer.data)
 
 class ProductParameterView(APIView):
     '''
