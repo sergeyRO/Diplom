@@ -49,8 +49,8 @@ services:
     command: sh -c "python manage.py runserver"
     expose:
       - "8000"
-    depends_on:
-      - postgres_sql
+#    depends_on:
+#      - postgres_sql
     networks:
       - nginx_network
       - postgres_network
