@@ -1,7 +1,7 @@
 # Верстальщик
 from rest_framework import serializers
 
-from backend.models import User, Category, Shop, ProductInfo, Product, ProductParameter, OrderItem, Order, Contact
+from backend.models import User, Category, Shop, ProductInfo, Product, ProductParameter, OrderItem, Order, Contact, Parameter
 
 
 class ContactSerializer(serializers.ModelSerializer):
@@ -45,12 +45,20 @@ class ProductSerializer(serializers.ModelSerializer):
         fields = ('name', 'category',)
 
 
-class ProductParameterSerializer(serializers.ModelSerializer):
+class ParameterSerializer(serializers.ModelSerializer):
     parameter = serializers.StringRelatedField()
 
     class Meta:
+        model = Parameter
+        fields = ('name',)
+
+class ProductParameterSerializer(serializers.ModelSerializer):
+    #parameter = serializers.StringRelatedField()
+    parameter = ParameterSerializer(read_only=True)
+
+    class Meta:
         model = ProductParameter
-        fields = ('parameter', 'value',)
+        fields = ('parameter', 'value')
 
 
 class ProductInfoSerializer(serializers.ModelSerializer):
