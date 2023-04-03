@@ -19,7 +19,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'first_name', 'last_name', 'email', 'company', 'position', 'contacts','type')
+        fields = ('id', 'first_name', 'last_name', 'email', 'company', 'position', 'contacts')
         read_only_fields = ('id',)
 
 
@@ -50,7 +50,8 @@ class ParameterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Parameter
-        fields = ('name',)
+        fields = '__all__'
+
 
 class ProductParameterSerializer(serializers.ModelSerializer):
     #parameter = serializers.StringRelatedField()

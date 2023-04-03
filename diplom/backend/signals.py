@@ -9,6 +9,10 @@ new_user_registered = Signal('user_id')
 
 new_order = Signal('user_id')
 
+new_order_admin = Signal()
+
+new_order_contact = Signal()
+
 
 @receiver(reset_password_token_created)
 def password_reset_token_created(sender, instance, reset_password_token, **kwargs):
@@ -70,6 +74,49 @@ def new_order_signal(user_id, **kwargs):
         f"Обновление статуса заказа",
         # message:
         'Заказ сформирован',
+        # from:
+        settings.EMAIL_HOST_USER,
+        # to:
+        [user.email]
+    )
+    msg.send()
+
+
+@receiver(new_order_admin)
+def new_order_admin_signal(user_id, **kwargs):
+    """
+    отправяем письмо админу после создания заказа
+    """
+    # send an e-mail to the user
+
+    msg = EmailMultiAlternatives(
+        # title:
+        f"Обновление статуса заказа",
+        # message:
+        'Заказ сформирован',
+        # from:
+        settings.EMAIL_HOST_USER,
+        # to:
+        settings.EMAIL_ADMIN
+    )
+    msg.send()
+
+
+@receiver(new_order_contact)
+def new_order_contact_signal(user_id, comment, **kwargs):
+    """
+    отправяем письмо при изменении статуса заказа
+    """
+    # send an e-mail to the user
+    user = User.objects.get(id=user_id)
+
+    msg = EmailMultiAlternatives(
+        # title:
+        f"Обновление статуса заказа",
+        # message:
+        'Заказ сформирован\n'
+        'Проверьте корректность адреса доставки ниже\n'
+        f'{comment}',
         # from:
         settings.EMAIL_HOST_USER,
         # to:

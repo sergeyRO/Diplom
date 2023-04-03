@@ -1,9 +1,13 @@
+from django.conf.urls.static import static
 from django.urls import path
 from django_rest_passwordreset.views import reset_password_request_token, reset_password_confirm
 
 from backend.views import PartnerUpdate, RegisterAccount, LoginAccount, CategoryView, ShopView, ProductInfoView, \
     BasketView, \
-    AccountDetails, ContactView, OrderView, PartnerState, PartnerOrders, ConfirmAccount, ParameterView
+    AccountDetails, ContactView, OrderView, PartnerState, PartnerOrders, ConfirmAccount, \
+    ParameterView, ImportProductView, OrderContactView
+
+from netology_pd_diplom import settings
 
 app_name = 'backend'
 urlpatterns = [
@@ -23,5 +27,6 @@ urlpatterns = [
     path('basket', BasketView.as_view(), name='basket'),
     path('order', OrderView.as_view(), name='order'),
     path('parameter', ParameterView.as_view(), name='parameter'),
-
-]
+    path('import_product', ImportProductView.as_view(), name='import_product'),
+    path('order_send', OrderContactView.as_view(), name='order_send'),
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

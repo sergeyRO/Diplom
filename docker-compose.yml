@@ -11,46 +11,46 @@ networks:
 
 services:
 
-#  postgres_sql:
-#    container_name: postgres_sql
-#    build:
-#      dockerfile: DockerfileDB
-#    #    env_file:
-#    #      - ./.envDB
-#    restart: unless-stopped
-#    command: -p 5433
-#    expose:
-#      - "5433"
-#    ports:
-#      - "5433:5433"
-#    volumes:
-#      - pgdata:/var/lib/postgresql/data
-#    networks:
-#      - postgres_network
+  postgres_sql:
+    container_name: postgres_sql
+    build:
+      dockerfile: DockerfileDB
+    #    env_file:
+    #      - ./.envDB
+    restart: unless-stopped
+    command: -p 5433
+    expose:
+      - "5433"
+    ports:
+      - "5433:5433"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - postgres_network
 
-#  nginx:
-#    container_name: nginx
-#    build: ./nginx
-#    restart: unless-stopped
-#    ports:
-#      - "1333:80"
-#    depends_on:
-#      - web
-#    networks:
-#      - nginx_network
-#    volumes:
-#      - static_volume:/app/staticfiles/
+  nginx:
+    container_name: nginx
+    build: ./nginx
+    restart: unless-stopped
+    ports:
+      - "1333:80"
+    depends_on:
+      - web
+    networks:
+      - nginx_network
+    volumes:
+      - static_volume:/app/staticfiles/
 
   web:
     container_name: diplom
     build:
       dockerfile: Dockerfile
     restart: unless-stopped
-    command: sh -c "python manage.py runserver"
+    command: sh -c "python3 ./manage.py migrate && python3 ./manage.py collectstatic && gunicorn netology_pd_diplom.wsgi:application --bind 0.0.0.0:8000 --workers=4"
     expose:
       - "8000"
-#    depends_on:
-#      - postgres_sql
+    depends_on:
+      - postgres_sql
     networks:
       - nginx_network
       - postgres_network
