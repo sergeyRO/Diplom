@@ -11,7 +11,7 @@ new_order = Signal('user_id')
 
 new_order_admin = Signal()
 
-new_order_contact = Signal()
+new_order_contact = Signal('user_id')
 
 
 @receiver(reset_password_token_created)
@@ -103,10 +103,11 @@ def new_order_admin_signal(user_id, **kwargs):
 
 
 @receiver(new_order_contact)
-def new_order_contact_signal(user_id, comment, **kwargs):
+def new_order_contact_signal(user_id, **kwargs):
     """
     отправяем письмо при изменении статуса заказа
     """
+
     # send an e-mail to the user
     user = User.objects.get(id=user_id)
 
@@ -116,7 +117,7 @@ def new_order_contact_signal(user_id, comment, **kwargs):
         # message:
         'Заказ сформирован\n'
         'Проверьте корректность адреса доставки ниже\n'
-        f'{comment}',
+        f'{kwargs["comment"]}',
         # from:
         settings.EMAIL_HOST_USER,
         # to:

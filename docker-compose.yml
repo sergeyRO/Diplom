@@ -8,6 +8,8 @@ networks:
     driver: bridge
   postgres_network:
     driver: bridge
+  dev_network:
+    driver: bridge
 
 services:
 
@@ -41,6 +43,32 @@ services:
     volumes:
       - static_volume:/app/staticfiles/
 
+  redis:
+    container_name: redis
+    image: redis:7.0.0-alpine3.15
+    ports:
+      - "6379:6379"
+    networks:
+      - dev_network
+
+  celery:
+    container_name: celery
+    build:
+      context: .
+      dockerfile: Dockerfile.celery
+    environment:
+      CELERY_BROKER: "redis://redis:6379/1"
+      CELERY_BACKEND: "redis://redis:6379/2"
+    depends_on:
+      - postgres_sql
+      - redis
+      - web
+    restart: always
+    networks:
+      - dev_network
+    links:
+      - redis
+
   web:
     container_name: diplom
     build:
@@ -54,6 +82,7 @@ services:
     networks:
       - nginx_network
       - postgres_network
+      - dev_network
     env_file:
       - ./.env
     volumes:

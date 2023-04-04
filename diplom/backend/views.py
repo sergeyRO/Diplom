@@ -530,7 +530,7 @@ class OrderContactView(APIView):
                 return JsonResponse({'Status': False, 'Errors': 'Неправильно указаны аргументы'})
             else:
                 if is_updated:
-                    new_order_contact.send(sender=self.__class__, user_id=request.user.id, comment=comment)
+                    d = new_order_contact.send(sender=self.__class__, user_id=request.user.id, comment=comment)
                     return JsonResponse({'Status': True})
 
         return JsonResponse({'Status': False, 'Errors': 'Не указаны все необходимые аргументы'})
