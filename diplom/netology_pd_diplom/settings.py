@@ -150,6 +150,7 @@ SERVER_EMAIL = os.environ.get("SERVER_EMAIL")
 
 EMAIL_ADMIN = os.environ.get("EMAIL_ADMIN")
 
+
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 40,
