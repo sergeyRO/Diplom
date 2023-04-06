@@ -1,4 +1,11 @@
 FROM python:3.9
-COPY . /app
 WORKDIR /app
+RUN pip install --upgrade pip
+RUN mkdir -p /app
+RUN mkdir -p /app/staticfiles
+RUN mkdir -p /app/diplom/netology_pd_diplom
+RUN mkdir -p /app/diplom/backend
+ADD ./* /app
+ADD ./diplom/netology_pd_diplom /app/diplom/netology_pd_diplom
+ADD ./diplom/backend /app/diplom/backend
 RUN apt-get update -y && apt-get install -y python3-opencv && pip install -r ./app/requirements.txt
