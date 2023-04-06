@@ -8,4 +8,4 @@ RUN mkdir -p /app/diplom/backend
 ADD ./* /app
 ADD ./diplom/netology_pd_diplom /app/diplom/netology_pd_diplom
 ADD ./diplom/backend /app/diplom/backend
-RUN apt-get update -y && apt-get install -y python3-opencv && RUN pip install -r requirements.txt
+RUN pip install -r requirements.txt
