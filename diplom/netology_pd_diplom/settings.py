@@ -21,16 +21,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '=hs6$#5om031nujz4staql9mbuste=!dc^6)4opsjq!vvjxzj@'
-#SECRET_KEY = os.environ.get("SECRET_KEY")
+# SECRET_KEY = '=hs6$#5om031nujz4staql9mbuste=!dc^6)4opsjq!vvjxzj@'
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-#DEBUG = int(os.environ.get("DEBUG", default=0))
+# DEBUG = True
+DEBUG = int(os.environ.get("DEBUG", default=0))
 
-ALLOWED_HOSTS = ['*']
-# ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "").split(",")
-# ALLOWED_HOSTS = [] if not any(ALLOWED_HOSTS) else ALLOWED_HOSTS
+#ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "").split(",")
+ALLOWED_HOSTS = [] if not any(ALLOWED_HOSTS) else ALLOWED_HOSTS
 
 # Application definition
 
@@ -88,22 +88,22 @@ DATABASES = {
     #     'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     # }
 
-    # 'default': {
-    #     'ENGINE': os.environ.get("ENGINE"),
-    #     'NAME': os.environ.get("DB"),
-    #     'HOST': os.environ.get("HOST"),
-    #     'PORT': os.environ.get("PORT"),
-    #     'USER': os.environ.get("USER"),
-    #     'PASSWORD': os.environ.get("PASSWORD")
-    # }
     'default': {
-        'ENGINE': "django.db.backends.postgresql",
-        'NAME': 'diplom_db',
-        'HOST': 'localhost',
-        'PORT': 5433,
-        'USER': 'diplom_user',
-        'PASSWORD': 'password'
+        'ENGINE': os.environ.get("ENGINE"),
+        'NAME': os.environ.get("DB"),
+        'HOST': os.environ.get("HOST"),
+        'PORT': os.environ.get("PORT"),
+        'USER': os.environ.get("USER"),
+        'PASSWORD': os.environ.get("PASSWORD")
     }
+    # 'default': {
+    #     'ENGINE': "django.db.backends.postgresql",
+    #     'NAME': 'diplom_db',
+    #     'HOST': 'localhost',
+    #     'PORT': 5433,
+    #     'USER': 'diplom_user',
+    #     'PASSWORD': 'password'
+    # }
 }
 
 # Password validation
@@ -148,22 +148,22 @@ AUTH_USER_MODEL = 'backend.User'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 # EMAIL_USE_TLS = True
 
-# EMAIL_HOST = os.environ.get("EMAIL_HOST")
-# EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
-# EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
-# EMAIL_PORT = os.environ.get("EMAIL_PORT")
-# EMAIL_USE_SSL = os.environ.get("EMAIL_USE_SSL")
-# SERVER_EMAIL = os.environ.get("SERVER_EMAIL")
-#
-# EMAIL_ADMIN = os.environ.get("EMAIL_ADMIN")
-EMAIL_HOST = "smtp.mail.ru"
-EMAIL_HOST_USER = "sergey_r.o@mail.ru"
-EMAIL_HOST_PASSWORD = "CKiP08tVg0ijgJxCWitE"
-EMAIL_PORT = 465
-EMAIL_USE_SSL = True
-SERVER_EMAIL = EMAIL_HOST_USER
+EMAIL_HOST = os.environ.get("EMAIL_HOST")
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
+EMAIL_PORT = os.environ.get("EMAIL_PORT")
+EMAIL_USE_SSL = os.environ.get("EMAIL_USE_SSL")
+SERVER_EMAIL = os.environ.get("SERVER_EMAIL")
 
-EMAIL_ADMIN = "sergey_r.o@mail.ru"
+EMAIL_ADMIN = os.environ.get("EMAIL_ADMIN")
+# EMAIL_HOST = "smtp.mail.ru"
+# EMAIL_HOST_USER = "sergey_r.o@mail.ru"
+# EMAIL_HOST_PASSWORD = "CKiP08tVg0ijgJxCWitE"
+# EMAIL_PORT = 465
+# EMAIL_USE_SSL = True
+# SERVER_EMAIL = EMAIL_HOST_USER
+#
+# EMAIL_ADMIN = "sergey_r.o@mail.ru"
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
