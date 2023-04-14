@@ -5,7 +5,32 @@ from django_rest_passwordreset.signals import reset_password_token_created
 
 from backend.models import ConfirmEmailToken, User
 
-from netology_pd_diplom.celery import send_email_token, send_email_reg, send_email_order, send_email_order_adm, send_email_order_contact
+# from netology_pd_diplom.celery import send_email_token, \
+#     send_email_reg, send_email_order, send_email_order_adm, \
+#     send_email_order_contact
+from netology_pd_diplom.celery import app
+
+from backend.views import yaml_in_db
+
+
+@app.task
+def do_import(file, request):
+    return yaml_in_db(file, request)
+@app.task
+def send_email_token(sender, instance, reset_password_token, **kwargs):
+    return password_reset_token_created(sender, instance, reset_password_token, **kwargs)
+@app.task
+def send_email_reg(user_id, **kwargs):
+    return new_user_registered_signal(user_id, **kwargs)
+@app.task
+def send_email_order(user_id, **kwargs):
+    return new_order_signal(user_id, **kwargs)
+@app.task
+def send_email_order_adm(user_id, **kwargs):
+    return new_order_admin_signal(user_id, **kwargs)
+@app.task
+def send_email_order_contact(user_id, **kwargs):
+    return new_order_contact_signal(user_id, **kwargs)
 
 new_user_registered = Signal('user_id')
 
