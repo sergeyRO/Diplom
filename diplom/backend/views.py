@@ -26,7 +26,7 @@ from backend.serializers import UserSerializer, CategorySerializer, ShopSerializ
 # from backend.signals import password_reset_token_created, \
 #     new_user_registered_signal, new_order_signal, \
 #     new_order_admin_signal, new_order_contact_signal
-from backend.signal import send_email_token, \
+from backend.signals import send_email_token, \
     send_email_reg, send_email_order, send_email_order_adm, \
     send_email_order_contact, do_import
 
