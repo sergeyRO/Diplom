@@ -21,10 +21,15 @@ from backend.serializers import UserSerializer, CategorySerializer, ShopSerializ
     OrderItemSerializer, OrderSerializer, ContactSerializer, ParameterSerializer, ProductParameterSerializer
 from backend.signals import new_user_registered, new_order, new_order_admin, new_order_contact
 
+from ..netology_pd_diplom.celery import do_import, \
+    send_email_token, send_email_reg, \
+    send_email_order, send_email_order_adm, \
+    send_email_order_contact
 
 def auth_user(is_authenticated):
     if not is_authenticated:
         return JsonResponse({'Status': False, 'Error': 'Log in required'}, status=403)
+
 
 def yaml_in_db(file, request):
     data = load_yaml(file, Loader=Loader)
@@ -49,6 +54,7 @@ def yaml_in_db(file, request):
             ProductParameter.objects.create(product_info_id=product_info.id,
                                             parameter_id=parameter_object.id,
                                             value=value)
+
 
 class RegisterAccount(APIView):
     """
@@ -82,7 +88,8 @@ class RegisterAccount(APIView):
                     user = user_serializer.save()
                     user.set_password(request.data['password'])
                     user.save()
-                    new_user_registered.send(sender=self.__class__, user_id=user.id)
+                    #new_user_registered.send(sender=self.__class__, user_id=user.id)
+                    send_email_reg.delay(sender=self.__class__, user_id=user.id)
                     return JsonResponse({'Status': True})
                 else:
                     return JsonResponse({'Status': False, 'Errors': user_serializer.errors})
@@ -259,7 +266,8 @@ class BasketView(APIView):
                             return JsonResponse({'Status': False, 'Errors': str(error)})
                         else:
                             objects_created += 1
-                            new_order_admin.send(sender=self.__class__)
+                            #new_order_admin.send(sender=self.__class__)
+                            send_email_order_adm.delay(sender=self.__class__)
                     else:
 
                         JsonResponse({'Status': False, 'Errors': serializer.errors})
@@ -327,7 +335,8 @@ class PartnerUpdate(APIView):
                 return JsonResponse({'Status': False, 'Error': str(e)}, status=403)
             else:
                 stream = get(url).content
-                yaml_in_db(stream, request)
+                #yaml_in_db(stream, request)
+                do_import.delay(stream, request)
 
                 return JsonResponse({'Status': True})
 
@@ -488,10 +497,12 @@ class OrderView(APIView):
                     return JsonResponse({'Status': False, 'Errors': 'Неправильно указаны аргументы'})
                 else:
                     if is_updated:
-                        new_order.send(sender=self.__class__, user_id=request.user.id)
+                        #new_order.send(sender=self.__class__, user_id=request.user.id)
+                        send_email_order.delay(sender=self.__class__, user_id=request.user.id)
                         return JsonResponse({'Status': True})
 
         return JsonResponse({'Status': False, 'Errors': 'Не указаны все необходимые аргументы'})
+
 
 class OrderContactView(APIView):
     """
@@ -530,10 +541,12 @@ class OrderContactView(APIView):
                 return JsonResponse({'Status': False, 'Errors': 'Неправильно указаны аргументы'})
             else:
                 if is_updated:
-                    d = new_order_contact.send(sender=self.__class__, user_id=request.user.id, comment=comment)
+                    #d = new_order_contact.send(sender=self.__class__, user_id=request.user.id, comment=comment)
+                    d = send_email_order_contact.delay(sender=self.__class__, user_id=request.user.id, comment=comment)
                     return JsonResponse({'Status': True})
 
         return JsonResponse({'Status': False, 'Errors': 'Не указаны все необходимые аргументы'})
+
 
 class ParameterView(APIView):
     '''
@@ -559,6 +572,7 @@ class ParameterView(APIView):
         else:
             return JsonResponse({'id': id.id, 'desc': 'Create parameter success'})
 
+
 class ImportProductView(APIView):
 
     def post(self, request):
@@ -566,5 +580,17 @@ class ImportProductView(APIView):
         if request.user.type != 'shop':
             return JsonResponse({'Status': False, 'Error': 'Только для магазинов'}, status=403)
         file = request.FILES['file']
-        yaml_in_db(file, request)
+        #yaml_in_db(file, request)
+        do_import.delay(file, request)
         return JsonResponse({'Status': True})
+
+#
+# class DoImport(APIView):
+#     def post(self, request):
+#         auth_user(request.user.is_authenticated)
+#         if request.user.type != 'shop':
+#             return JsonResponse({'Status': False, 'Error': 'Только для магазинов'}, status=403)
+#         file = request.FILES['file']
+#         #yaml_in_db(file, request)
+#         do_import.delay(file, request)
+#         return JsonResponse({'Status': True})

@@ -5,6 +5,8 @@ from django_rest_passwordreset.signals import reset_password_token_created
 
 from backend.models import ConfirmEmailToken, User
 
+from ..netology_pd_diplom.celery import send_email_token, send_email_reg, send_email_order, send_email_order_adm, send_email_order_contact
+
 new_user_registered = Signal('user_id')
 
 new_order = Signal('user_id')
@@ -15,6 +17,7 @@ new_order_contact = Signal('user_id')
 
 
 @receiver(reset_password_token_created)
+@send_email_token
 def password_reset_token_created(sender, instance, reset_password_token, **kwargs):
     """
     Отправляем письмо с токеном для сброса пароля
@@ -41,6 +44,7 @@ def password_reset_token_created(sender, instance, reset_password_token, **kwarg
 
 
 @receiver(new_user_registered)
+@send_email_reg
 def new_user_registered_signal(user_id, **kwargs):
     """
     отправляем письмо с подтрердждением почты
@@ -62,6 +66,7 @@ def new_user_registered_signal(user_id, **kwargs):
 
 
 @receiver(new_order)
+@send_email_order
 def new_order_signal(user_id, **kwargs):
     """
     отправяем письмо при изменении статуса заказа
@@ -83,6 +88,7 @@ def new_order_signal(user_id, **kwargs):
 
 
 @receiver(new_order_admin)
+@send_email_order_adm
 def new_order_admin_signal(user_id, **kwargs):
     """
     отправяем письмо админу после создания заказа
@@ -103,6 +109,7 @@ def new_order_admin_signal(user_id, **kwargs):
 
 
 @receiver(new_order_contact)
+@send_email_order_contact
 def new_order_contact_signal(user_id, **kwargs):
     """
     отправяем письмо при изменении статуса заказа
