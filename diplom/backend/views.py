@@ -21,7 +21,7 @@ from backend.serializers import UserSerializer, CategorySerializer, ShopSerializ
     OrderItemSerializer, OrderSerializer, ContactSerializer, ParameterSerializer, ProductParameterSerializer
 from backend.signals import new_user_registered, new_order, new_order_admin, new_order_contact
 
-from ..netology_pd_diplom.celery import do_import, \
+from netology_pd_diplom.celery import do_import, \
     send_email_token, send_email_reg, \
     send_email_order, send_email_order_adm, \
     send_email_order_contact
