@@ -5,9 +5,9 @@ from django_rest_passwordreset.signals import reset_password_token_created
 
 from backend.models import ConfirmEmailToken, User
 
-# from netology_pd_diplom.celery import send_email_token, \
-#     send_email_reg, send_email_order, send_email_order_adm, \
-#     send_email_order_contact
+from netology_pd_diplom.celery import send_email_token, \
+    send_email_reg, send_email_order, send_email_order_adm, \
+    send_email_order_contact
 from netology_pd_diplom.celery import app
 
 # from backend.views import yaml_in_db
