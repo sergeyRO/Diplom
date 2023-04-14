@@ -10,12 +10,12 @@ from backend.models import ConfirmEmailToken, User
 #     send_email_order_contact
 from netology_pd_diplom.celery import app
 
-from backend.views import yaml_in_db
-
-
-@app.task
-def do_import(file, request):
-    return yaml_in_db(file, request)
+# from backend.views import yaml_in_db
+#
+#
+# @app.task
+# def do_import(file, request):
+#     return yaml_in_db(file, request)
 @app.task
 def send_email_token(sender, instance, reset_password_token, **kwargs):
     return password_reset_token_created(sender, instance, reset_password_token, **kwargs)

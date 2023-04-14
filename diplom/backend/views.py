@@ -339,8 +339,8 @@ class PartnerUpdate(APIView):
                 return JsonResponse({'Status': False, 'Error': str(e)}, status=403)
             else:
                 stream = get(url).content
-                #yaml_in_db(stream, request)
-                do_import.delay(stream, request)
+                yaml_in_db(stream, request)
+                #do_import.delay(stream, request)
 
                 return JsonResponse({'Status': True})
 
@@ -584,8 +584,8 @@ class ImportProductView(APIView):
         if request.user.type != 'shop':
             return JsonResponse({'Status': False, 'Error': 'Только для магазинов'}, status=403)
         file = request.FILES['file']
-        #yaml_in_db(file, request)
-        do_import.delay(file, request)
+        yaml_in_db(file, request)
+        #do_import.delay(file, request)
         return JsonResponse({'Status': True})
 
 #
