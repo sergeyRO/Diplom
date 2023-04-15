@@ -156,8 +156,8 @@ class AccountDetails(ModelViewSet):
         return Response(self.serializer_class(instance).data,
                         status=status.HTTP_200_OK)
 
-    # Редактирование методом PATCH
-    @action(detail=True, methods=["patch"], url_path=r'user-details', )
+    # Редактирование методом POST
+    @action(detail=True, methods=["post"], url_path=r'user-details', )
     def update(self, request, pk=None, *args, **kwargs):
         print(f"{request}---->>>>>      {request}        ---->>>>{pk}    ---------------->>>>{request.data}")
         user = request.user
