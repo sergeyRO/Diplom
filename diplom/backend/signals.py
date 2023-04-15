@@ -1,3 +1,5 @@
+from smtplib import SMTPException
+
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.dispatch import receiver, Signal
@@ -42,10 +44,16 @@ new_order_admin = Signal()
 
 new_order_contact = Signal('user_id')
 
-# @app.task
-# def send_message(msg):
-#     print(msg)
-#     return msg.send()
+@app.task
+def send_message(user_id, **kwargs):
+    token, _ = ConfirmEmailToken.objects.get_or_create(user_id=user_id)
+    subject, from_email, to = f"Password Reset Token for {token.user.email}", settings.EMAIL_HOST_USER, token.user.email
+    text_content = token.key
+    #html_content = '<p>This is an <strong>important</strong> message.</p>'
+    msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
+    #msg.attach_alternative(html_content, "text/html")
+    msg.send(fail_silently=False)
+
 
 @receiver(reset_password_token_created)
 def password_reset_token_created(sender, instance, reset_password_token, **kwargs):
@@ -73,8 +81,7 @@ def password_reset_token_created(sender, instance, reset_password_token, **kwarg
     msg.send()
 
 
-#@receiver(new_user_registered)
-@app.task
+@receiver(new_user_registered)
 def new_user_registered_signal(user_id, **kwargs):
     """
     отправляем письмо с подтрердждением почты
@@ -93,7 +100,6 @@ def new_user_registered_signal(user_id, **kwargs):
         [token.user.email]
     )
     msg.send()
-    #send_message.delay(msg)
 
 
 @receiver(new_order)

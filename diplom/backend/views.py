@@ -23,7 +23,7 @@ from backend.signals import new_user_registered, new_order, new_order_admin, new
 
 from backend.signals import password_reset_token_created, \
     new_user_registered_signal, new_order_signal, \
-    new_order_admin_signal, new_order_contact_signal
+    new_order_admin_signal, new_order_contact_signal, send_message
 # from backend.signals import send_email_token, \
 #     send_email_reg, send_email_order, send_email_order_adm, \
 #     send_email_order_contact, do_import
@@ -93,7 +93,7 @@ class RegisterAccount(APIView):
                     print('отправляется')
                     #new_user_registered.send(sender=self.__class__, user_id=user.id)
                     #new_user_registered.send(sender=self.__class__, user_id=user.id)
-                    new_user_registered_signal.delay(sender=self.__class__, user_id=user.id)
+                    send_message.delay(sender=self.__class__, user_id=user.id)
                     print('отправлено')
                     #new_user_registered_signal.delay(sender=self.__class__, user_id=user.id)
                     #send_email_reg.delay(sender=self.__class__, user_id=user.id)
