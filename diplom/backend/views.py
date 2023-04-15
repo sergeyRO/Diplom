@@ -93,6 +93,8 @@ class RegisterAccount(APIView):
                     print('отправляется')
                     #new_user_registered.send(sender=self.__class__, user_id=user.id)
                     #new_user_registered.send(sender=self.__class__, user_id=user.id)
+                    print(self.__class__)
+                    print(user.id)
                     send_message.delay(sender=self.__class__, user_id=user.id)
                     print('отправлено')
                     #new_user_registered_signal.delay(sender=self.__class__, user_id=user.id)
