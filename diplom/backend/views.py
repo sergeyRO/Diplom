@@ -626,5 +626,6 @@ class ImportProductView(APIView):
         # yaml_in_db(file, request)
         print(f"file=====>    {file}")
         print(f"request=====>    {request}")
+        print(f"user=====>    {request.user.id}")
         do_import.delay(file, request)
         return JsonResponse({'Status': True})
