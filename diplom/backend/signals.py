@@ -45,16 +45,16 @@ new_order_admin = Signal()
 new_order_contact = Signal('user_id')
 
 @app.task
-def send_message(user_id):
+def send_message(token, email, user_id):
     #token, _ = ConfirmEmailToken.objects.get_or_create(user_id=user_id)
-    # subject, from_email, to = f"Password Reset Token for {token.user.email}", settings.EMAIL_HOST_USER, token.user.email
-    # text_content = token.key
-    # #html_content = '<p>This is an <strong>important</strong> message.</p>'
-    # msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
-    # #msg.attach_alternative(html_content, "text/html")
-    # msg.send(fail_silently=False)
-    i = user_id+100
-    return i
+    subject, from_email, to = f"Password Reset Token for {email}", settings.EMAIL_HOST_USER, email
+    text_content = token
+    #html_content = '<p>This is an <strong>important</strong> message.</p>'
+    msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
+    #msg.attach_alternative(html_content, "text/html")
+    msg.send(fail_silently=False)
+    # i = user_id+100
+    # return i
 
 @app.task
 def d():
