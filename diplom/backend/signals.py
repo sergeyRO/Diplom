@@ -19,7 +19,8 @@ from netology_pd_diplom.celery import app
 
 @app.task
 def send_email_token(sender, instance, reset_password_token, **kwargs):
-    return password_reset_token_created(sender, instance, reset_password_token, **kwargs)
+    #return password_reset_token_created(sender, instance, reset_password_token, **kwargs)
+    return password_reset_token_created(sender, reset_password_token, **kwargs)
 @app.task
 def send_email_reg(user_id, **kwargs):
     return new_user_registered_signal(user_id, **kwargs)
@@ -44,7 +45,8 @@ new_order_contact = Signal('user_id')
 
 @receiver(reset_password_token_created)
 @send_email_token
-def password_reset_token_created(sender, instance, reset_password_token, **kwargs):
+# def password_reset_token_created(sender, instance, reset_password_token, **kwargs):
+def password_reset_token_created(sender, reset_password_token, **kwargs):
     """
     Отправляем письмо с токеном для сброса пароля
     When a token is created, an e-mail needs to be sent to the user
