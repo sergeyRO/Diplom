@@ -20,11 +20,9 @@ from backend.models import Shop, Category, Product, ProductInfo, Parameter, Prod
     Contact, ConfirmEmailToken, User
 from backend.serializers import UserSerializer, CategorySerializer, ShopSerializer, ProductInfoSerializer, \
     OrderItemSerializer, OrderSerializer, ContactSerializer, ParameterSerializer, ProductParameterSerializer
-from backend.signals import new_user_registered, new_order, new_order_admin, new_order_contact
+# from backend.signals import new_user_registered, new_order, new_order_admin, new_order_contact
 
-from backend.signals import password_reset_token_created, \
-    new_user_registered_signal, new_order_signal, \
-    new_order_admin_signal, new_order_contact_signal, send_message, d
+from backend.signals import send_message
 # from backend.signals import send_email_token, \
 #     send_email_reg, send_email_order, send_email_order_adm, \
 #     send_email_order_contact, do_import
