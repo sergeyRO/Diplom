@@ -156,14 +156,15 @@ class AccountDetails(ModelViewSet):
         return Response(self.serializer_class(instance).data,
                         status=status.HTTP_200_OK)
 
-    # Редактирование методом POST
-    @action(detail=True, methods=["post"], url_path=r'user-details', )
+    # Редактирование методом PATCH
+    @action(detail=True, methods=["patch"], url_path=r'user-details', )
     def update(self, request, pk=None, *args, **kwargs):
         print(f"{request}---->>>>>      {request}        ---->>>>{pk}    ---------------->>>>{request.data}")
         user = request.user
         instance = self.get_object()
         print(instance)
         print(instance.id)
+        print(user)
         if 'password' in request.data:
             errors = {}
             # проверяем пароль на сложность
@@ -178,7 +179,7 @@ class AccountDetails(ModelViewSet):
             else:
                 request.user.set_password(request.data['password'])
         # проверяем остальные данные
-        user_serializer = self.serializer_class(pk, data=request.data, partial=True)
+        user_serializer = self.serializer_class(user, data=request.data, partial=True)
         if user_serializer.is_valid():
             user_serializer.save()
             return JsonResponse({'Status': True})
