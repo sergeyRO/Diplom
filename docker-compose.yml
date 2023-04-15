@@ -67,6 +67,8 @@ services:
     restart: always
     networks:
       - dev_network
+    env_file:
+      - ./.env
     links:
       - redis
 
