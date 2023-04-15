@@ -177,13 +177,13 @@ class AccountDetails(ModelViewSet):
                 return JsonResponse({'Status': False, 'Errors': {'password': error_array}})
             else:
                 request.user.set_password(request.data['password'])
-            # проверяем остальные данные
-            user_serializer = self.serializer_class(pk, data=request.data, partial=True)
-            if user_serializer.is_valid():
-                user_serializer.save()
-                return JsonResponse({'Status': True})
-            else:
-                return JsonResponse({'Status': False, 'Errors': user_serializer.errors})
+        # проверяем остальные данные
+        user_serializer = self.serializer_class(pk, data=request.data, partial=True)
+        if user_serializer.is_valid():
+            user_serializer.save()
+            return JsonResponse({'Status': True})
+        else:
+            return JsonResponse({'Status': False, 'Errors': user_serializer.errors})
 
 # class AccountDetails(APIView):
 #     """
