@@ -44,8 +44,7 @@ def do_import(file, request):
     return yaml_in_db(file, request)
 
 def yaml_in_db(file, request):
-    # data = load_yaml(file, Loader=Loader)
-    data = do_import.delay(file)
+    data = load_yaml(file, Loader=Loader)
     shop, _ = Shop.objects.get_or_create(name=data['shop'], user_id=request.user.id)
     for category in data['categories']:
         category_object, _ = Category.objects.get_or_create(id=category['id'], name=category['name'])
