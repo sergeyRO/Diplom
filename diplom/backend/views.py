@@ -19,7 +19,7 @@ from backend.models import Shop, Category, Product, ProductInfo, Parameter, Prod
     Contact, ConfirmEmailToken
 from backend.serializers import UserSerializer, CategorySerializer, ShopSerializer, ProductInfoSerializer, \
     OrderItemSerializer, OrderSerializer, ContactSerializer, ParameterSerializer, ProductParameterSerializer
-# from backend.signals import new_user_registered, new_order, new_order_admin, new_order_contact
+from backend.signals import new_user_registered, new_order, new_order_admin, new_order_contact
 
 from backend.signals import password_reset_token_created, \
     new_user_registered_signal, new_order_signal, \
@@ -91,8 +91,8 @@ class RegisterAccount(APIView):
                     user.set_password(request.data['password'])
                     user.save()
                     #new_user_registered.send(sender=self.__class__, user_id=user.id)
-                    #new_user_registered.send(sender=self.__class__, user_id=user.id)
-                    new_user_registered_signal.delay(sender=self.__class__, user_id=user.id)
+                    new_user_registered.send(sender=self.__class__, user_id=user.id)
+                    #new_user_registered_signal.delay(sender=self.__class__, user_id=user.id)
                     #send_email_reg.delay(sender=self.__class__, user_id=user.id)
                     return JsonResponse({'Status': True})
                 else:
