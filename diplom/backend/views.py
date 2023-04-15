@@ -1,5 +1,6 @@
 from distutils.util import strtobool
 
+from django.conf import settings
 from django.contrib.auth import authenticate
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
@@ -16,7 +17,7 @@ from ujson import loads as load_json
 from yaml import load as load_yaml, Loader
 
 from backend.models import Shop, Category, Product, ProductInfo, Parameter, ProductParameter, Order, OrderItem, \
-    Contact, ConfirmEmailToken
+    Contact, ConfirmEmailToken, User
 from backend.serializers import UserSerializer, CategorySerializer, ShopSerializer, ProductInfoSerializer, \
     OrderItemSerializer, OrderSerializer, ContactSerializer, ParameterSerializer, ProductParameterSerializer
 from backend.signals import new_user_registered, new_order, new_order_admin, new_order_contact
@@ -90,20 +91,9 @@ class RegisterAccount(APIView):
                     user = user_serializer.save()
                     user.set_password(request.data['password'])
                     user.save()
-                    print('отправляется')
                     token, _ = ConfirmEmailToken.objects.get_or_create(user_id=user.id)
-                    print(f"token ===>    {token}")
-                    print(token.user.email)
                     #new_user_registered.send(sender=self.__class__, user_id=user.id)
-                    #new_user_registered.send(sender=self.__class__, user_id=user.id)
-                    print(self.__class__)
-                    print(user.id)
-                    d.delay()
-                    print(d)
-                    send_message.delay(token.key, token.user.email, user.id)
-                    print('отправлено')
-                    #new_user_registered_signal.delay(sender=self.__class__, user_id=user.id)
-                    #send_email_reg.delay(sender=self.__class__, user_id=user.id)
+                    send_message.delay(f"Password Reset Token for {token.user.email}", token.key, token.user.email)
                     return JsonResponse({'Status': True})
                 else:
                     return JsonResponse({'Status': False, 'Errors': user_serializer.errors})
@@ -281,7 +271,7 @@ class BasketView(APIView):
                         else:
                             objects_created += 1
                             #new_order_admin.send(sender=self.__class__)
-                            send_email_order_adm.delay(sender=self.__class__)
+                            send_message.delay(f"Обновление статуса заказа", 'Заказ сформирован', settings.EMAIL_ADMIN)
                     else:
 
                         JsonResponse({'Status': False, 'Errors': serializer.errors})
@@ -512,7 +502,9 @@ class OrderView(APIView):
                 else:
                     if is_updated:
                         #new_order.send(sender=self.__class__, user_id=request.user.id)
-                        send_email_order.delay(sender=self.__class__, user_id=request.user.id)
+                        #send_email_order.delay(sender=self.__class__, user_id=request.user.id)
+                        user = User.objects.get(id=request.user.id)
+                        send_message.delay(f"Обновление статуса заказа", 'Заказ сформирован', user.email)
                         return JsonResponse({'Status': True})
 
         return JsonResponse({'Status': False, 'Errors': 'Не указаны все необходимые аргументы'})
@@ -556,7 +548,11 @@ class OrderContactView(APIView):
             else:
                 if is_updated:
                     #d = new_order_contact.send(sender=self.__class__, user_id=request.user.id, comment=comment)
-                    d = send_email_order_contact.delay(sender=self.__class__, user_id=request.user.id, comment=comment)
+                    #d = send_email_order_contact.delay(sender=self.__class__, user_id=request.user.id, comment=comment)
+                    user = User.objects.get(id=request.user.id)
+                    send_message.delay(f"Обновление статуса заказа", f'Заказ сформирован\n'
+                                                                     f'Проверьте корректность адреса доставки ниже\n'
+                                                                     f'{comment}', user.email)
                     return JsonResponse({'Status': True})
 
         return JsonResponse({'Status': False, 'Errors': 'Не указаны все необходимые аргументы'})
