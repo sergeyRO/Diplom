@@ -21,18 +21,18 @@ from netology_pd_diplom.celery import app
 # def send_email_token(sender, instance, reset_password_token, **kwargs):
 #     #return password_reset_token_created(sender, instance, reset_password_token, **kwargs)
 #     return password_reset_token_created(sender, reset_password_token)
-@app.task
-def send_email_reg(user_id, **kwargs):
-    return new_user_registered_signal(user_id, **kwargs)
-@app.task
-def send_email_order(user_id, **kwargs):
-    return new_order_signal(user_id, **kwargs)
-@app.task
-def send_email_order_adm(user_id, **kwargs):
-    return new_order_admin_signal(user_id, **kwargs)
-@app.task
-def send_email_order_contact(user_id, **kwargs):
-    return new_order_contact_signal(user_id, **kwargs)
+# @app.task
+# def send_email_reg(user_id, **kwargs):
+#     return new_user_registered_signal(user_id, **kwargs)
+# @app.task
+# def send_email_order(user_id, **kwargs):
+#     return new_order_signal(user_id, **kwargs)
+# @app.task
+# def send_email_order_adm(user_id, **kwargs):
+#     return new_order_admin_signal(user_id, **kwargs)
+# @app.task
+# def send_email_order_contact(user_id, **kwargs):
+#     return new_order_contact_signal(user_id, **kwargs)
 
 new_user_registered = Signal('user_id')
 
@@ -44,8 +44,8 @@ new_order_contact = Signal('user_id')
 
 
 @receiver(reset_password_token_created)
+@app.task
 def password_reset_token_created(sender, instance, reset_password_token, **kwargs):
-#def password_reset_token_created(sender, reset_password_token):
     """
     Отправляем письмо с токеном для сброса пароля
     When a token is created, an e-mail needs to be sent to the user
@@ -71,7 +71,7 @@ def password_reset_token_created(sender, instance, reset_password_token, **kwarg
 
 
 @receiver(new_user_registered)
-@send_email_reg
+@app.task
 def new_user_registered_signal(user_id, **kwargs):
     """
     отправляем письмо с подтрердждением почты
@@ -93,7 +93,7 @@ def new_user_registered_signal(user_id, **kwargs):
 
 
 @receiver(new_order)
-@send_email_order
+@app.task
 def new_order_signal(user_id, **kwargs):
     """
     отправяем письмо при изменении статуса заказа
@@ -115,7 +115,7 @@ def new_order_signal(user_id, **kwargs):
 
 
 @receiver(new_order_admin)
-@send_email_order_adm
+@app.task
 def new_order_admin_signal(user_id, **kwargs):
     """
     отправяем письмо админу после создания заказа
@@ -136,7 +136,7 @@ def new_order_admin_signal(user_id, **kwargs):
 
 
 @receiver(new_order_contact)
-@send_email_order_contact
+@app.task
 def new_order_contact_signal(user_id, **kwargs):
     """
     отправяем письмо при изменении статуса заказа
