@@ -54,6 +54,9 @@ def send_message(user_id):
     #msg.attach_alternative(html_content, "text/html")
     msg.send(fail_silently=False)
 
+@app.task
+def d():
+    return True
 
 @receiver(reset_password_token_created)
 def password_reset_token_created(sender, instance, reset_password_token, **kwargs):
