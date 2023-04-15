@@ -178,7 +178,7 @@ class AccountDetails(ModelViewSet):
             else:
                 request.user.set_password(request.data['password'])
             # проверяем остальные данные
-            user_serializer = self.serializer_class(instance=instance, data=request.data, partial=True)
+            user_serializer = self.serializer_class(pk, data=request.data, partial=True)
             if user_serializer.is_valid():
                 user_serializer.save()
                 return JsonResponse({'Status': True})
