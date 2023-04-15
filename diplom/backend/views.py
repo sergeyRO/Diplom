@@ -159,9 +159,11 @@ class AccountDetails(ModelViewSet):
     # Редактирование методом PATCH
     @action(detail=True, methods=["patch"], url_path=r'user-details', )
     def update(self, request, pk=None, *args, **kwargs):
-        print(f"{request}--------{pk}")
+        print(f"{request}---->>>>>      {request}        ---->>>>{pk}    ---------------->>>>{request.data}")
         user = request.user
         instance = self.get_object()
+        print(instance)
+        print(instance.id)
         if 'password' in request.data:
             errors = {}
             # проверяем пароль на сложность
