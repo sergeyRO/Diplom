@@ -44,6 +44,7 @@ new_order_contact = Signal('user_id')
 
 @app.task
 def send_message(msg):
+    print(msg)
     return msg.send()
 
 @receiver(reset_password_token_created)
