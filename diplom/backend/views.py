@@ -9,6 +9,7 @@ from django.db import IntegrityError
 from django.db.models import Q, Sum, F
 from django.http import JsonResponse
 from requests import get
+from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
@@ -28,6 +29,9 @@ from backend.serializers import UserSerializer, CategorySerializer, ShopSerializ
 #     send_email_reg, send_email_order, send_email_order_adm, \
 #     send_email_order_contact, do_import
 from netology_pd_diplom.celery import app
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import action
 
 @app.task()
 def send_message(title, message, email):
@@ -136,23 +140,27 @@ class ConfirmAccount(APIView):
         return JsonResponse({'Status': False, 'Errors': 'Не указаны все необходимые аргументы'})
 
 
-class AccountDetails(APIView):
+class AccountDetails(ModelViewSet):
     """
     Класс для работы данными пользователя
     """
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = (IsAuthenticated,)
+    http_method_names = ['get', 'patch']
 
     # получить данные
-    def get(self, request, *args, **kwargs):
-        auth_user(request.user.is_authenticated)
+    @action(detail=True, methods=["get"], url_path=r'user-details', )
+    def retrieve(self, request, pk=None):
+        instance = self.get_object()
+        return Response(self.serializer_class(instance).data,
+                        status=status.HTTP_200_OK)
 
-        serializer = UserSerializer(request.user)
-        return Response(serializer.data)
-
-    # Редактирование методом POST
-    def post(self, request, *args, **kwargs):
-        auth_user(request.user.is_authenticated)
-        # проверяем обязательные аргументы
-
+    # Редактирование методом PATCH
+    @action(detail=True, methods=["patch"], url_path=r'user-details', )
+    def update(self, request, pk=None, *args, **kwargs):
+        user = request.user
+        instance = self.get_object()
         if 'password' in request.data:
             errors = {}
             # проверяем пароль на сложность
@@ -166,14 +174,52 @@ class AccountDetails(APIView):
                 return JsonResponse({'Status': False, 'Errors': {'password': error_array}})
             else:
                 request.user.set_password(request.data['password'])
+            # проверяем остальные данные
+            user_serializer = self.serializer_class(instance=instance, data=request.data, partial=True)
+            if user_serializer.is_valid():
+                user_serializer.save()
+                return JsonResponse({'Status': True})
+            else:
+                return JsonResponse({'Status': False, 'Errors': user_serializer.errors})
 
-        # проверяем остальные данные
-        user_serializer = UserSerializer(request.user, data=request.data, partial=True)
-        if user_serializer.is_valid():
-            user_serializer.save()
-            return JsonResponse({'Status': True})
-        else:
-            return JsonResponse({'Status': False, 'Errors': user_serializer.errors})
+# class AccountDetails(APIView):
+#     """
+#     Класс для работы данными пользователя
+#     """
+#
+#     # получить данные
+#     def get(self, request, *args, **kwargs):
+#         auth_user(request.user.is_authenticated)
+#
+#         serializer = UserSerializer(request.user)
+#         return Response(serializer.data)
+#
+#     # Редактирование методом POST
+#     def post(self, request, *args, **kwargs):
+#         auth_user(request.user.is_authenticated)
+#         # проверяем обязательные аргументы
+#
+#         if 'password' in request.data:
+#             errors = {}
+#             # проверяем пароль на сложность
+#             try:
+#                 validate_password(request.data['password'])
+#             except Exception as password_error:
+#                 error_array = []
+#                 # noinspection PyTypeChecker
+#                 for item in password_error:
+#                     error_array.append(item)
+#                 return JsonResponse({'Status': False, 'Errors': {'password': error_array}})
+#             else:
+#                 request.user.set_password(request.data['password'])
+#
+#         # проверяем остальные данные
+#         user_serializer = UserSerializer(request.user, data=request.data, partial=True)
+#         if user_serializer.is_valid():
+#             user_serializer.save()
+#             return JsonResponse({'Status': True})
+#         else:
+#             return JsonResponse({'Status': False, 'Errors': user_serializer.errors})
 
 
 class LoginAccount(APIView):
