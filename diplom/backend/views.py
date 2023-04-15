@@ -27,10 +27,10 @@ from backend.serializers import UserSerializer, CategorySerializer, ShopSerializ
 # from backend.signals import send_email_token, \
 #     send_email_reg, send_email_order, send_email_order_adm, \
 #     send_email_order_contact, do_import
-from netology_pd_diplom.celery import app
+#from netology_pd_diplom.celery import app
 from celery import shared_task
 
-@app.task
+@shared_task()
 def send_message(title, message, email):
     subject, from_email, to = title, settings.EMAIL_HOST_USER, email
     text_content = message
