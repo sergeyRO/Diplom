@@ -27,10 +27,9 @@ from backend.serializers import UserSerializer, CategorySerializer, ShopSerializ
 # from backend.signals import send_email_token, \
 #     send_email_reg, send_email_order, send_email_order_adm, \
 #     send_email_order_contact, do_import
-#from netology_pd_diplom.celery import app
-from celery import shared_task
+from netology_pd_diplom.celery import app
 
-@shared_task()
+@app.task()
 def send_message(title, message, email):
     subject, from_email, to = title, settings.EMAIL_HOST_USER, email
     text_content = message
@@ -39,9 +38,8 @@ def send_message(title, message, email):
     msg.attach_alternative(html_content, "text/html")
     msg.send(fail_silently=False)
 
-@shared_task()
+@app.task()
 def do_import(file, request):
-    #return load_yaml(file, Loader=Loader)
     return yaml_in_db(file, request)
 
 def yaml_in_db(file, request):
