@@ -45,7 +45,7 @@ new_order_admin = Signal()
 new_order_contact = Signal('user_id')
 
 @app.task
-def send_message(user_id, **kwargs):
+def send_message(user_id):
     token, _ = ConfirmEmailToken.objects.get_or_create(user_id=user_id)
     subject, from_email, to = f"Password Reset Token for {token.user.email}", settings.EMAIL_HOST_USER, token.user.email
     text_content = token.key
