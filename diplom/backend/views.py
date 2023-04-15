@@ -39,9 +39,9 @@ def send_message(title, message, email):
     msg.send(fail_silently=False)
 
 @app.task
-def do_import(file, request):
+def do_import(file, user):
     data = load_yaml(file, Loader=Loader)
-    shop, _ = Shop.objects.get_or_create(name=data['shop'], user_id=request.user.id)
+    shop, _ = Shop.objects.get_or_create(name=data['shop'], user_id=user)
     for category in data['categories']:
         category_object, _ = Category.objects.get_or_create(id=category['id'], name=category['name'])
         category_object.shops.add(shop.id)
@@ -627,5 +627,6 @@ class ImportProductView(APIView):
         print(f"file=====>    {file}")
         print(f"request=====>    {request}")
         print(f"user=====>    {request.user.id}")
-        do_import.delay(file, request)
+        #do_import.delay(file, request)
+        do_import.delay(file, request.user.id)
         return JsonResponse({'Status': True})
