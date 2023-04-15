@@ -147,7 +147,7 @@ class AccountDetails(ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = (IsAuthenticated,)
-    http_method_names = ['get', 'patch']
+    #http_method_names = ['get', 'patch']
 
     # получить данные
     @action(detail=True, methods=["get"], url_path=r'user-details', )
