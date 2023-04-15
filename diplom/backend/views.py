@@ -624,5 +624,7 @@ class ImportProductView(APIView):
             return JsonResponse({'Status': False, 'Error': 'Только для магазинов'}, status=403)
         file = request.FILES['file']
         # yaml_in_db(file, request)
+        print(f"file=====>    {file}")
+        print(f"request=====>    {request}")
         do_import.delay(file, request)
         return JsonResponse({'Status': True})
