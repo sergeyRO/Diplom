@@ -27,7 +27,7 @@ from backend.serializers import UserSerializer, CategorySerializer, ShopSerializ
 # from backend.signals import send_email_token, \
 #     send_email_reg, send_email_order, send_email_order_adm, \
 #     send_email_order_contact, do_import
-from netology_pd_diplom.celery import app
+from netology_pd_diplom.celery import app, shared_task
 
 @app.task
 def send_message(title, message, email):
@@ -38,9 +38,10 @@ def send_message(title, message, email):
     msg.attach_alternative(html_content, "text/html")
     msg.send(fail_silently=False)
 
-@app.task
-def do_import(file):
-    load_yaml(file, Loader=Loader)
+@shared_task()
+def do_import(file, request):
+    #return load_yaml(file, Loader=Loader)
+    return yaml_in_db(file, request)
 
 def yaml_in_db(file, request):
     # data = load_yaml(file, Loader=Loader)
@@ -601,9 +602,9 @@ class ImportProductView(APIView):
         if request.user.type != 'shop':
             return JsonResponse({'Status': False, 'Error': 'Только для магазинов'}, status=403)
         file = request.FILES['file']
-        yaml_in_db(file, request)
+        #yaml_in_db(file, request)
         print(f"file=====>    {file}")
         print(f"request=====>    {request}")
         print(f"user=====>    {request.user.id}")
-        #do_import.delay(file, request)
+        do_import.delay(file, request)
         return JsonResponse({'Status': True})
