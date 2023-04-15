@@ -42,10 +42,10 @@ new_order_admin = Signal()
 
 new_order_contact = Signal('user_id')
 
-@app.task
-def send_message(msg):
-    print(msg)
-    return msg.send()
+# @app.task
+# def send_message(msg):
+#     print(msg)
+#     return msg.send()
 
 @receiver(reset_password_token_created)
 def password_reset_token_created(sender, instance, reset_password_token, **kwargs):
@@ -73,7 +73,8 @@ def password_reset_token_created(sender, instance, reset_password_token, **kwarg
     msg.send()
 
 
-@receiver(new_user_registered)
+#@receiver(new_user_registered)
+@app.task
 def new_user_registered_signal(user_id, **kwargs):
     """
     отправляем письмо с подтрердждением почты
@@ -91,8 +92,8 @@ def new_user_registered_signal(user_id, **kwargs):
         # to:
         [token.user.email]
     )
-    #msg.send()
-    send_message.delay(msg)
+    msg.send()
+    #send_message.delay(msg)
 
 
 @receiver(new_order)
