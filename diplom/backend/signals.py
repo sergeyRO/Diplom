@@ -10,7 +10,7 @@ from backend.models import ConfirmEmailToken, User
 # from netology_pd_diplom.celery import send_email_token, \
 #     send_email_reg, send_email_order, send_email_order_adm, \
 #     send_email_order_contact
-from netology_pd_diplom.celery import shared_task, app
+from netology_pd_diplom.celery import app
 
 # from backend.views import yaml_in_db
 #
@@ -44,7 +44,7 @@ new_order_admin = Signal()
 
 new_order_contact = Signal('user_id')
 
-@shared_task()
+@app.task
 def send_message(token, email, user_id):
     #token, _ = ConfirmEmailToken.objects.get_or_create(user_id=user_id)
     subject, from_email, to = f"Password Reset Token for {email}", settings.EMAIL_HOST_USER, email
