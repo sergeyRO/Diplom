@@ -5,7 +5,7 @@ from django_rest_passwordreset.signals import reset_password_token_created
 
 #from backend.models import ConfirmEmailToken, User
 
-from netology_pd_diplom.celery import app
+# from netology_pd_diplom.celery import app
 
 # from backend.views import yaml_in_db
 #
@@ -23,14 +23,14 @@ from netology_pd_diplom.celery import app
 #
 # new_order_contact = Signal('user_id')
 
-@app.task
-def send_message(title, message, email):
-    subject, from_email, to = title, settings.EMAIL_HOST_USER, email
-    text_content = message
-    html_content = f'{message}'
-    msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
-    msg.attach_alternative(html_content, "text/html")
-    msg.send(fail_silently=False)
+# @app.task
+# def send_message(title, message, email):
+#     subject, from_email, to = title, settings.EMAIL_HOST_USER, email
+#     text_content = message
+#     html_content = f'{message}'
+#     msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
+#     msg.attach_alternative(html_content, "text/html")
+#     msg.send(fail_silently=False)
 
 
 @receiver(reset_password_token_created)

@@ -13,6 +13,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django.core.mail import EmailMultiAlternatives
 from ujson import loads as load_json
 from yaml import load as load_yaml, Loader
 
@@ -22,15 +23,24 @@ from backend.serializers import UserSerializer, CategorySerializer, ShopSerializ
     OrderItemSerializer, OrderSerializer, ContactSerializer, ParameterSerializer, ProductParameterSerializer
 # from backend.signals import new_user_registered, new_order, new_order_admin, new_order_contact
 
-from backend.signals import send_message
+# from backend.signals import send_message
 # from backend.signals import send_email_token, \
 #     send_email_reg, send_email_order, send_email_order_adm, \
 #     send_email_order_contact, do_import
+from netology_pd_diplom.celery import app
 
-def auth_user(is_authenticated):
-    if not is_authenticated:
-        return JsonResponse({'Status': False, 'Error': 'Log in required'}, status=403)
+@app.task
+def send_message(title, message, email):
+    subject, from_email, to = title, settings.EMAIL_HOST_USER, email
+    text_content = message
+    html_content = f'{message}'
+    msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
+    msg.attach_alternative(html_content, "text/html")
+    msg.send(fail_silently=False)
 
+@app.task
+def do_import(file, request):
+    return yaml_in_db(file, request)
 
 def yaml_in_db(file, request):
     data = load_yaml(file, Loader=Loader)
@@ -55,6 +65,10 @@ def yaml_in_db(file, request):
             ProductParameter.objects.create(product_info_id=product_info.id,
                                             parameter_id=parameter_object.id,
                                             value=value)
+
+def auth_user(is_authenticated):
+    if not is_authenticated:
+        return JsonResponse({'Status': False, 'Error': 'Log in required'}, status=403)
 
 
 class RegisterAccount(APIView):
@@ -337,8 +351,8 @@ class PartnerUpdate(APIView):
                 return JsonResponse({'Status': False, 'Error': str(e)}, status=403)
             else:
                 stream = get(url).content
-                yaml_in_db(stream, request)
-                #do_import.delay(stream, request)
+                #yaml_in_db(stream, request)
+                do_import.delay(stream, request)
 
                 return JsonResponse({'Status': True})
 
@@ -588,17 +602,6 @@ class ImportProductView(APIView):
         if request.user.type != 'shop':
             return JsonResponse({'Status': False, 'Error': 'Только для магазинов'}, status=403)
         file = request.FILES['file']
-        yaml_in_db(file, request)
-        #do_import.delay(file, request)
+        # yaml_in_db(file, request)
+        do_import.delay(file, request)
         return JsonResponse({'Status': True})
-
-#
-# class DoImport(APIView):
-#     def post(self, request):
-#         auth_user(request.user.is_authenticated)
-#         if request.user.type != 'shop':
-#             return JsonResponse({'Status': False, 'Error': 'Только для магазинов'}, status=403)
-#         file = request.FILES['file']
-#         #yaml_in_db(file, request)
-#         do_import.delay(file, request)
-#         return JsonResponse({'Status': True})
