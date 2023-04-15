@@ -39,12 +39,12 @@ def send_message(title, message, email):
     msg.send(fail_silently=False)
 
 @app.task
-def do_import(file, request):
-    data = load_yaml(file, Loader=Loader)
-    yaml_in_db(data, request)
+def do_import(file):
+    load_yaml(file, Loader=Loader)
 
-def yaml_in_db(data, request):
-    #data = load_yaml(file, Loader=Loader)
+def yaml_in_db(file, request):
+    # data = load_yaml(file, Loader=Loader)
+    data = do_import.delay(file)
     shop, _ = Shop.objects.get_or_create(name=data['shop'], user_id=request.user.id)
     for category in data['categories']:
         category_object, _ = Category.objects.get_or_create(id=category['id'], name=category['name'])
@@ -352,9 +352,7 @@ class PartnerUpdate(APIView):
                 return JsonResponse({'Status': False, 'Error': str(e)}, status=403)
             else:
                 stream = get(url).content
-                #yaml_in_db(stream, request)
-                do_import.delay(stream, request)
-
+                yaml_in_db(stream, request)
                 return JsonResponse({'Status': True})
 
         return JsonResponse({'Status': False, 'Errors': 'Не указаны все необходимые аргументы'})
@@ -603,10 +601,9 @@ class ImportProductView(APIView):
         if request.user.type != 'shop':
             return JsonResponse({'Status': False, 'Error': 'Только для магазинов'}, status=403)
         file = request.FILES['file']
-        # yaml_in_db(file, request)
+        yaml_in_db(file, request)
         print(f"file=====>    {file}")
         print(f"request=====>    {request}")
         print(f"user=====>    {request.user.id}")
         #do_import.delay(file, request)
-        do_import.delay(file, request.user.id)
         return JsonResponse({'Status': True})
