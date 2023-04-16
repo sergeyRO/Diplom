@@ -61,8 +61,8 @@ from model_bakery import baker
 def test_create_user(request):
     count_users_start = User.objects.count()
     print(count_users_start)
-    print(ConfirmEmailToken.objects.get())
-    print(User.objects.get())
+    print(ConfirmEmailToken.objects.all())
+    print(User.objects.all())
     response = requests.post('http://127.0.0.1:1333/api/v1/user/register', data={"first_name": "Serge1",
                                                                                  "last_name": "Rogch1",
                                                           "email": "sergey_r.o@mail.ru", "password": "password",
