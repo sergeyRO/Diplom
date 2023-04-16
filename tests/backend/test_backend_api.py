@@ -8,24 +8,24 @@ from backend.models import User, Shop, Category, \
 from model_bakery import baker
 
 
-@pytest.fixture
-def client():
-    return APIClient()
-
-
-@pytest.fixture
-def user():
-    return baker.make(User)
-
-
-@pytest.fixture
-def users():
-    return baker.make(User, 10)
-
-
-@pytest.fixture
-def shop():
-    return baker.make(Shop, 10)
+# @pytest.fixture
+# def client():
+#     return APIClient()
+#
+#
+# @pytest.fixture
+# def user():
+#     return baker.make(User)
+#
+#
+# @pytest.fixture
+# def users():
+#     return baker.make(User, 10)
+#
+#
+# @pytest.fixture
+# def shop():
+#     return baker.make(Shop, 10)
 
 # @pytest.mark.django_db
 # def test_get_course(client, user):
@@ -58,9 +58,9 @@ def shop():
 
 
 @pytest.mark.django_db
-def test_create_user(client, request):
+def test_create_user(request):
     count_users_start = User.objects.count()
-    response = client.post('/api/v1/user/register', data={"first_name": "Serge1", "last_name": "Rogch1",
+    response = requests.post('http://127.0.0.1:1333/api/v1/user/register', data={"first_name": "Serge1", "last_name": "Rogch1",
                                                           "email": "sergey_r.o@mail.ru", "password": "password",
                                                           "company": "nelt11", "position": 1, "type": "shop",
                                                           "username": "gggg"}, format='json')
@@ -72,23 +72,23 @@ def test_create_user(client, request):
 
 
 @pytest.mark.django_db
-def test_confirm(client, request):
-    response = client.post(f'/api/v1/user/register/confirm', data={'token': request.config.cache.get('token_key', None),
+def test_confirm(request):
+    response = requests.post(f'http://127.0.0.1:1333/api/v1/user/register/confirm', data={'token': request.config.cache.get('token_key', None),
                                                                     'email': request.config.cache.get('email', None)},
                             format='json')
     assert response.status_code == 200
 
 @pytest.mark.django_db
-def test_login(client, request):
-    response = client.post(f'/api/v1/user/login', data={"password": "password",
+def test_login(request):
+    response = requests.post(f'http://127.0.0.1:1333/api/v1/user/login', data={"password": "password",
                                                         "email": "sergey_r.o@mail.ru"},
                            format='json')
     assert response.status_code == 200
     request.config.cache.set('token', response.Token)
 
 @pytest.mark.django_db
-def test_user_detail(client, request):
-    response = client.post(f'/api/v1user/details/{request.config.cache.get("user_id", None)}',
+def test_user_detail(request):
+    response = requests.post(f'http://127.0.0.1:1333/api/v1user/details/{request.config.cache.get("user_id", None)}',
                            headers={'Content-Type': 'application/json',
                                     'Authorization': f'Token {request.config.cache.get("token")}'})
     assert response.status_code == 200
