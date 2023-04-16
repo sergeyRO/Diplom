@@ -83,7 +83,7 @@ class RegisterAccount(APIView):
     def post(self, request, *args, **kwargs):
 
         # проверяем обязательные аргументы
-        if {'first_name', 'last_name', 'email', 'password', 'company', 'position'}.issubset(request.data):
+        if {'first_name', 'last_name', 'email', 'password', 'company', 'position', 'type'}.issubset(request.data):
             errors = {}
 
             # проверяем пароль на сложность
@@ -110,7 +110,7 @@ class RegisterAccount(APIView):
                     token, _ = ConfirmEmailToken.objects.get_or_create(user_id=user.id)
                     #new_user_registered.send(sender=self.__class__, user_id=user.id)
                     send_message.delay(f"Password Reset Token for {token.user.email}", token.key, token.user.email)
-                    return JsonResponse({'Status': True})
+                    return JsonResponse({'Status': True, 'key': token.key, 'email': token.user.email, 'user_id': user.id})
                 else:
                     return JsonResponse({'Status': False, 'Errors': user_serializer.errors})
 

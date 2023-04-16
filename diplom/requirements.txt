@@ -8,3 +8,6 @@ requests
 gunicorn
 celery
 redis
+pytest
+pytest-django
+model_bakery
