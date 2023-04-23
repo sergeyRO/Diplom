@@ -11,3 +11,4 @@ redis
 pytest
 pytest-django
 model_bakery
+drf-spectacular

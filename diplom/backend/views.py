@@ -22,12 +22,9 @@ from backend.models import Shop, Category, Product, ProductInfo, Parameter, Prod
     Contact, ConfirmEmailToken, User
 from backend.serializers import UserSerializer, CategorySerializer, ShopSerializer, ProductInfoSerializer, \
     OrderItemSerializer, OrderSerializer, ContactSerializer, ParameterSerializer, ProductParameterSerializer
-# from backend.signals import new_user_registered, new_order, new_order_admin, new_order_contact
 
-# from backend.signals import send_message
-# from backend.signals import send_email_token, \
-#     send_email_reg, send_email_order, send_email_order_adm, \
-#     send_email_order_contact, do_import
+from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
+
 from netology_pd_diplom.celery import app
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
@@ -146,6 +143,7 @@ class AccountDetails(ModelViewSet):
     """
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    throttle_classes = [UserRateThrottle, AnonRateThrottle]
     permission_classes = (IsAuthenticated,)
 
     # получить данные
