@@ -81,7 +81,7 @@ SOCIALACCOUNT_PROVIDERS = {
         'APP': {
             'client_id': '51627324',
             'secret': 'ZMi9eVl2leoHYTB3VJ4A',
-            'key': ''
+            'key': '617d67ee617d67ee617d67ee26626ea2d26617d617d67ee05340d64b4f537b7e7b7cf47'
         }
     },
     'github': {
