@@ -79,7 +79,7 @@ AUTHENTICATION_BACKENDS = [
 
 #CSRF_TRUSTED_ORIGINS = ['http://localhost:1333']
 
-
+APPEND_SLASH=False
 # Provider specific settings
 SOCIALACCOUNT_PROVIDERS = {
     'vk': {
