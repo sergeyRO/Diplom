@@ -13,7 +13,7 @@ ADD ./diplom/backend /app/diplom/backend
 RUN ls -lrt /app
 RUN pip install -r requirements.txt
 RUN python3 ./manage.py makemigrations backend
-RUN DJANGO_SUPERUSER_PASSWORD=123456789
+#RUN DJANGO_SUPERUSER_PASSWORD=123456789
 EXPOSE 8000
 
 
