@@ -72,12 +72,13 @@ AUTHENTICATION_BACKENDS = [
 # VK_APP_ID = '51627324'
 # VKONTAKTE_APP_ID = VK_APP_ID
 # VK_API_SECRET = 'ZMi9eVl2leoHYTB3VJ4A'
-       
+
 # VKONTAKTE_APP_SECRET = VK_API_SECRET
 
 #617d67ee617d67ee617d67ee26626ea2d26617d617d67ee05340d64b4f537b7e7b7cf47
 
 #CSRF_TRUSTED_ORIGINS = ['http://localhost:1333']
+
 
 # Provider specific settings
 SOCIALACCOUNT_PROVIDERS = {
@@ -89,11 +90,11 @@ SOCIALACCOUNT_PROVIDERS = {
         }
     },
     'github': {
-        'SCOPE': [
-            'user',
-            'repo',
-            'read:org',
-        ],
+        'APP': {
+            'client_id': '24b0ccd09174bfc1c7f1',
+            'secret': 'a32677a3d05ebcd977556327e2655530af04a308',
+            'key': '',
+        },
     },
     'google': {
         # For each OAuth based provider, either add a ``SocialApp``
@@ -131,7 +132,6 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'social_django.context_processors.backends',
             ],
         },
     },
