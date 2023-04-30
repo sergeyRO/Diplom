@@ -60,13 +60,8 @@ INSTALLED_APPS = [
 SITE_ID = 1
 
 AUTHENTICATION_BACKENDS = [
-    # Needed to login by username in Django admin, regardless of `allauth`
     'django.contrib.auth.backends.ModelBackend',
-    # `allauth` specific authentication methods, such as login by e-mail
     'allauth.account.auth_backends.AuthenticationBackend',
-    # 'social_auth.backends.contrib.vk.VKOAuth2Backend',
-    # 'social_auth.backends.google.GoogleOAuth2Backend',
-    # 'social_auth.backends.contrib.github.GithubBackend',
 ]
 
 # VK_APP_ID = '51627324'
@@ -78,8 +73,13 @@ AUTHENTICATION_BACKENDS = [
 #617d67ee617d67ee617d67ee26626ea2d26617d617d67ee05340d64b4f537b7e7b7cf47
 
 #CSRF_TRUSTED_ORIGINS = ['http://*', 'https://*']
+# 'client_id': '401297302695-3glah46fhsi5s04tmr5i1gbjnmps2l5f.apps.googleusercontent.com',
+# 'secret': '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',
+
+
 CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:1333']
 APPEND_SLASH = False
+LOGIN_REDIRECT_URL = "/"
 # Provider specific settings
 SOCIALACCOUNT_PROVIDERS = {
     'vk': {
@@ -97,15 +97,15 @@ SOCIALACCOUNT_PROVIDERS = {
         },
     },
     'google': {
-        # For each OAuth based provider, either add a ``SocialApp``
-        # (``socialaccount`` app) containing the required client
-        # credentials, or list them here:
-        'APP': {
-            'client_id': '123',
-            'secret': '456',
-            'key': ''
-        }
-    }
+        'SCOPE': [
+            'profile',
+            'email',
+                 ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+                        },
+        'OAUTH_PKCE_ENABLED': True,
+            }
 }
 
 MIDDLEWARE = [
@@ -123,8 +123,7 @@ ROOT_URLCONF = 'netology_pd_diplom.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')]
-        ,
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
