@@ -5,6 +5,9 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django_rest_passwordreset.tokens import get_token_generator
 
+from allauth.account.signals import user_signed_up
+from django.dispatch import receiver
+
 STATE_CHOICES = (
     ('basket', 'Статус корзины'),
     ('new', 'Новый'),
@@ -63,6 +66,20 @@ class UserManager(BaseUserManager):
 
         return self._create_user(email, password, **extra_fields)
 
+    @receiver(user_signed_up)
+    def user_signed_up_(request, sociallogin=None, **extra_fields):
+        if sociallogin:
+            if sociallogin.account.provider == 'vk':
+                extra_fields.setdefault('is_active', True)
+                extra_fields.setdefault('type', 'user_vk')
+
+            if sociallogin.account.provider == 'github':
+                extra_fields.setdefault('is_active', True)
+                extra_fields.setdefault('type', 'user_github')
+
+            if sociallogin.account.provider == 'google':
+                extra_fields.setdefault('is_active', True)
+                extra_fields.setdefault('type', 'user_google')
 
 class User(AbstractUser):
     """
