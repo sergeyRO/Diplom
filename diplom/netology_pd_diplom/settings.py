@@ -44,8 +44,70 @@ INSTALLED_APPS = [
     'backend.apps.BackendConfig',
     'rest_framework',
     'rest_framework.authtoken',
-    'django_rest_passwordreset'
+    'django_rest_passwordreset',
+    'drf_spectacular',
+    'django.contrib.sites',
+
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+
+    'allauth.socialaccount.providers.vk',
+    'allauth.socialaccount.providers.github',
+    'allauth.socialaccount.providers.google',
 ]
+
+SITE_ID = 1
+
+AUTHENTICATION_BACKENDS = [
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+    # `allauth` specific authentication methods, such as login by e-mail
+    'allauth.account.auth_backends.AuthenticationBackend',
+    # 'social_auth.backends.contrib.vk.VKOAuth2Backend',
+    # 'social_auth.backends.google.GoogleOAuth2Backend',
+    # 'social_auth.backends.contrib.github.GithubBackend',
+]
+
+# VK_APP_ID = '51627324'
+# VKONTAKTE_APP_ID = VK_APP_ID
+# VK_API_SECRET = 'ZMi9eVl2leoHYTB3VJ4A'
+
+# VKONTAKTE_APP_SECRET = VK_API_SECRET
+
+#617d67ee617d67ee617d67ee26626ea2d26617d617d67ee05340d64b4f537b7e7b7cf47
+
+#CSRF_TRUSTED_ORIGINS = ['http://*', 'https://*']
+CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:1333']
+APPEND_SLASH = False
+#1
+# Provider specific settings
+SOCIALACCOUNT_PROVIDERS = {
+    'vk': {
+        'APP': {
+            'client_id': '51627324',
+            'secret': 'ZMi9eVl2leoHYTB3VJ4A',
+            'key': ''
+        }
+    },
+    'github': {
+        'APP': {
+            'client_id': '24b0ccd09174bfc1c7f1',
+            'secret': 'a32677a3d05ebcd977556327e2655530af04a308',
+            'key': '',
+        },
+    },
+    'google': {
+        # For each OAuth based provider, either add a ``SocialApp``
+        # (``socialaccount`` app) containing the required client
+        # credentials, or list them here:
+        'APP': {
+            'client_id': '123',
+            'secret': '456',
+            'key': ''
+        }
+    }
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -96,7 +158,14 @@ DATABASES = {
         'USER': os.environ.get("USER"),
         'PASSWORD': os.environ.get("PASSWORD")
     }
-
+    # 'default': {
+    #     'ENGINE': "django.db.backends.postgresql",
+    #     'NAME': 'diplom_db',
+    #     'HOST': 'localhost',
+    #     'PORT': 5433,
+    #     'USER': 'diplom_user',
+    #     'PASSWORD': 'password'
+    # }
 }
 
 # Password validation
@@ -149,24 +218,46 @@ EMAIL_USE_SSL = os.environ.get("EMAIL_USE_SSL")
 SERVER_EMAIL = os.environ.get("SERVER_EMAIL")
 
 EMAIL_ADMIN = os.environ.get("EMAIL_ADMIN")
-
+# EMAIL_HOST = "smtp.mail.ru"
+# EMAIL_HOST_USER = "sergey_r.o@mail.ru"
+# EMAIL_HOST_PASSWORD = "CKiP08tVg0ijgJxCWitE"
+# EMAIL_PORT = 465
+# EMAIL_USE_SSL = True
+# SERVER_EMAIL = EMAIL_HOST_USER
+#
+# EMAIL_ADMIN = "sergey_r.o@mail.ru"
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 40,
-
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
-
     ),
-
     'DEFAULT_AUTHENTICATION_CLASSES': (
         # 'rest_framework.authentication.SessionAuthentication',
         # 'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.TokenAuthentication',
     ),
-
+    'DEFAULT_THROTTLE_RATES': {
+        'user': '20/minute',
+        'anon': '10/minute',
+    },
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
-
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'API v0.1',
+    'DESCRIPTION': 'DIPLOM',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    # OTHER SETTINGS
+}
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
+# CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL")
+# CELERY_RESULT_BACKEND = os.environ.get("CELERY_RESULT_BACKEND")
+
+CELERY_BROKER_URL = "redis://redis:6379/1"
+CELERY_RESULT_BACKEND = "redis://redis:6379/2"
+# CELERY_BROKER_URL = "redis://localhost:6379/1"
+# CELERY_RESULT_BACKEND = "redis://localhost:6379/2"

@@ -1,5 +1,6 @@
 from distutils.util import strtobool
 
+from django.conf import settings
 from django.contrib.auth import authenticate
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
@@ -8,23 +9,39 @@ from django.db import IntegrityError
 from django.db.models import Q, Sum, F
 from django.http import JsonResponse
 from requests import get
+from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django.core.mail import EmailMultiAlternatives
 from ujson import loads as load_json
 from yaml import load as load_yaml, Loader
 
 from backend.models import Shop, Category, Product, ProductInfo, Parameter, ProductParameter, Order, OrderItem, \
-    Contact, ConfirmEmailToken
+    Contact, ConfirmEmailToken, User
 from backend.serializers import UserSerializer, CategorySerializer, ShopSerializer, ProductInfoSerializer, \
     OrderItemSerializer, OrderSerializer, ContactSerializer, ParameterSerializer, ProductParameterSerializer
-from backend.signals import new_user_registered, new_order, new_order_admin, new_order_contact
 
+from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
 
-def auth_user(is_authenticated):
-    if not is_authenticated:
-        return JsonResponse({'Status': False, 'Error': 'Log in required'}, status=403)
+from netology_pd_diplom.celery import app
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import action
+
+@app.task()
+def send_message(title, message, email):
+    subject, from_email, to = title, settings.EMAIL_HOST_USER, email
+    text_content = message
+    html_content = f'{message}'
+    msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
+    msg.attach_alternative(html_content, "text/html")
+    msg.send(fail_silently=False)
+
+@app.task()
+def do_import(file, request):
+    return yaml_in_db(file, request)
 
 def yaml_in_db(file, request):
     data = load_yaml(file, Loader=Loader)
@@ -50,6 +67,11 @@ def yaml_in_db(file, request):
                                             parameter_id=parameter_object.id,
                                             value=value)
 
+def auth_user(is_authenticated):
+    if not is_authenticated:
+        return JsonResponse({'Status': False, 'Error': 'Log in required'}, status=403)
+
+
 class RegisterAccount(APIView):
     """
     Для регистрации покупателей
@@ -58,7 +80,7 @@ class RegisterAccount(APIView):
     def post(self, request, *args, **kwargs):
 
         # проверяем обязательные аргументы
-        if {'first_name', 'last_name', 'email', 'password', 'company', 'position'}.issubset(request.data):
+        if {'first_name', 'last_name', 'email', 'password', 'company', 'position', 'type'}.issubset(request.data):
             errors = {}
 
             # проверяем пароль на сложность
@@ -82,8 +104,10 @@ class RegisterAccount(APIView):
                     user = user_serializer.save()
                     user.set_password(request.data['password'])
                     user.save()
-                    new_user_registered.send(sender=self.__class__, user_id=user.id)
-                    return JsonResponse({'Status': True})
+                    token, _ = ConfirmEmailToken.objects.get_or_create(user_id=user.id)
+                    #new_user_registered.send(sender=self.__class__, user_id=user.id)
+                    send_message.delay(f"Password Reset Token for {token.user.email}", token.key, token.user.email)
+                    return JsonResponse({'Status': True, 'key': token.key, 'email': token.user.email, 'user_id': user.id})
                 else:
                     return JsonResponse({'Status': False, 'Errors': user_serializer.errors})
 
@@ -113,23 +137,26 @@ class ConfirmAccount(APIView):
         return JsonResponse({'Status': False, 'Errors': 'Не указаны все необходимые аргументы'})
 
 
-class AccountDetails(APIView):
+class AccountDetails(ModelViewSet):
     """
     Класс для работы данными пользователя
     """
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    throttle_classes = [UserRateThrottle, AnonRateThrottle]
+    permission_classes = (IsAuthenticated,)
 
     # получить данные
-    def get(self, request, *args, **kwargs):
-        auth_user(request.user.is_authenticated)
+    @action(detail=True, methods=["get"], url_path=r'user-details', )
+    def retrieve(self, request, pk=None):
+        instance = self.get_object()
+        return Response(self.serializer_class(instance).data,
+                        status=status.HTTP_200_OK)
 
-        serializer = UserSerializer(request.user)
-        return Response(serializer.data)
-
-    # Редактирование методом POST
-    def post(self, request, *args, **kwargs):
-        auth_user(request.user.is_authenticated)
-        # проверяем обязательные аргументы
-
+    # Редактирование методом PATCH
+    @action(detail=True, methods=["patch"], url_path=r'user-details', )
+    def update(self, request, pk=None, *args, **kwargs):
+        user = request.user
         if 'password' in request.data:
             errors = {}
             # проверяем пароль на сложность
@@ -143,14 +170,52 @@ class AccountDetails(APIView):
                 return JsonResponse({'Status': False, 'Errors': {'password': error_array}})
             else:
                 request.user.set_password(request.data['password'])
-
         # проверяем остальные данные
-        user_serializer = UserSerializer(request.user, data=request.data, partial=True)
+        user_serializer = self.serializer_class(user, data=request.data, partial=True)
         if user_serializer.is_valid():
             user_serializer.save()
             return JsonResponse({'Status': True})
         else:
             return JsonResponse({'Status': False, 'Errors': user_serializer.errors})
+
+# class AccountDetails(APIView):
+#     """
+#     Класс для работы данными пользователя
+#     """
+#
+#     # получить данные
+#     def get(self, request, *args, **kwargs):
+#         auth_user(request.user.is_authenticated)
+#
+#         serializer = UserSerializer(request.user)
+#         return Response(serializer.data)
+#
+#     # Редактирование методом POST
+#     def post(self, request, *args, **kwargs):
+#         auth_user(request.user.is_authenticated)
+#         # проверяем обязательные аргументы
+#
+#         if 'password' in request.data:
+#             errors = {}
+#             # проверяем пароль на сложность
+#             try:
+#                 validate_password(request.data['password'])
+#             except Exception as password_error:
+#                 error_array = []
+#                 # noinspection PyTypeChecker
+#                 for item in password_error:
+#                     error_array.append(item)
+#                 return JsonResponse({'Status': False, 'Errors': {'password': error_array}})
+#             else:
+#                 request.user.set_password(request.data['password'])
+#
+#         # проверяем остальные данные
+#         user_serializer = UserSerializer(request.user, data=request.data, partial=True)
+#         if user_serializer.is_valid():
+#             user_serializer.save()
+#             return JsonResponse({'Status': True})
+#         else:
+#             return JsonResponse({'Status': False, 'Errors': user_serializer.errors})
 
 
 class LoginAccount(APIView):
@@ -259,7 +324,8 @@ class BasketView(APIView):
                             return JsonResponse({'Status': False, 'Errors': str(error)})
                         else:
                             objects_created += 1
-                            new_order_admin.send(sender=self.__class__)
+                            #new_order_admin.send(sender=self.__class__)
+                            send_message.delay(f"Обновление статуса заказа", 'Заказ сформирован', settings.EMAIL_ADMIN)
                     else:
 
                         JsonResponse({'Status': False, 'Errors': serializer.errors})
@@ -328,7 +394,6 @@ class PartnerUpdate(APIView):
             else:
                 stream = get(url).content
                 yaml_in_db(stream, request)
-
                 return JsonResponse({'Status': True})
 
         return JsonResponse({'Status': False, 'Errors': 'Не указаны все необходимые аргументы'})
@@ -488,10 +553,14 @@ class OrderView(APIView):
                     return JsonResponse({'Status': False, 'Errors': 'Неправильно указаны аргументы'})
                 else:
                     if is_updated:
-                        new_order.send(sender=self.__class__, user_id=request.user.id)
+                        #new_order.send(sender=self.__class__, user_id=request.user.id)
+                        #send_email_order.delay(sender=self.__class__, user_id=request.user.id)
+                        user = User.objects.get(id=request.user.id)
+                        send_message.delay(f"Обновление статуса заказа", 'Заказ сформирован', user.email)
                         return JsonResponse({'Status': True})
 
         return JsonResponse({'Status': False, 'Errors': 'Не указаны все необходимые аргументы'})
+
 
 class OrderContactView(APIView):
     """
@@ -530,10 +599,16 @@ class OrderContactView(APIView):
                 return JsonResponse({'Status': False, 'Errors': 'Неправильно указаны аргументы'})
             else:
                 if is_updated:
-                    new_order_contact.send(sender=self.__class__, user_id=request.user.id, comment=comment)
+                    #d = new_order_contact.send(sender=self.__class__, user_id=request.user.id, comment=comment)
+                    #d = send_email_order_contact.delay(sender=self.__class__, user_id=request.user.id, comment=comment)
+                    user = User.objects.get(id=request.user.id)
+                    send_message.delay(f"Обновление статуса заказа", f'Заказ сформирован\n'
+                                                                     f'Проверьте корректность адреса доставки ниже\n'
+                                                                     f'{comment}', user.email)
                     return JsonResponse({'Status': True})
 
         return JsonResponse({'Status': False, 'Errors': 'Не указаны все необходимые аргументы'})
+
 
 class ParameterView(APIView):
     '''
@@ -559,6 +634,7 @@ class ParameterView(APIView):
         else:
             return JsonResponse({'id': id.id, 'desc': 'Create parameter success'})
 
+
 class ImportProductView(APIView):
 
     def post(self, request):
@@ -566,5 +642,9 @@ class ImportProductView(APIView):
         if request.user.type != 'shop':
             return JsonResponse({'Status': False, 'Error': 'Только для магазинов'}, status=403)
         file = request.FILES['file']
-        yaml_in_db(file, request)
+        #yaml_in_db(file, request)
+        print(f"file=====>    {file}")
+        print(f"request=====>    {request}")
+        print(f"user=====>    {request.user.id}")
+        do_import.delay(file, request)
         return JsonResponse({'Status': True})

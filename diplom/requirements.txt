@@ -6,3 +6,10 @@ pyyaml
 ujson
 requests
 gunicorn
+celery
+redis
+pytest
+pytest-django
+model_bakery
+drf-spectacular
+django-allauth
