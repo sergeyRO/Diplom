@@ -83,19 +83,26 @@ CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:1333', 'http://localhost:1333']
 
 # Provider specific settings
 SOCIALACCOUNT_PROVIDERS = {
-    'vk': {
-        'APP': {
-            'client_id': '51627324',
-            'secret': 'ZMi9eVl2leoHYTB3VJ4A',
-            'key': ''
-        }
-    },
+    # 'vk': {
+    #     'APP': {
+    #         'client_id': '51627324',
+    #         'secret': 'ZMi9eVl2leoHYTB3VJ4A',
+    #         'key': ''
+    #     }
+    # },
+    # 'github': {
+    #     'APP': {
+    #         'client_id': '8fc8f9ff3ba76f80f72a',
+    #         'secret': 'd1cb65d08f3899cee9487887224a59b77686782f',
+    #         'key': '',
+    #     },
+    # },
     'github': {
-        'APP': {
-            'client_id': '24b0ccd09174bfc1c7f1',
-            'secret': 'a32677a3d05ebcd977556327e2655530af04a308',
-            'key': '',
-        },
+        'SCOPE': [
+            'user',
+            'repo',
+            'read:org',
+        ],
     },
     'google': {
         'SCOPE': [
