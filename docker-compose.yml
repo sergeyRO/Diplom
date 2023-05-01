@@ -35,6 +35,7 @@ services:
     build: ./nginx
     restart: unless-stopped
     ports:
+#      - "1333:80"
       - "80:80"
     depends_on:
       - web
