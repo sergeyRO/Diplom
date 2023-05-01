@@ -60,13 +60,8 @@ INSTALLED_APPS = [
 SITE_ID = 1
 
 AUTHENTICATION_BACKENDS = [
-    # Needed to login by username in Django admin, regardless of `allauth`
     'django.contrib.auth.backends.ModelBackend',
-    # `allauth` specific authentication methods, such as login by e-mail
     'allauth.account.auth_backends.AuthenticationBackend',
-    # 'social_auth.backends.contrib.vk.VKOAuth2Backend',
-    # 'social_auth.backends.google.GoogleOAuth2Backend',
-    # 'social_auth.backends.contrib.github.GithubBackend',
 ]
 
 # VK_APP_ID = '51627324'
@@ -78,8 +73,16 @@ AUTHENTICATION_BACKENDS = [
 #617d67ee617d67ee617d67ee26626ea2d26617d617d67ee05340d64b4f537b7e7b7cf47
 
 #CSRF_TRUSTED_ORIGINS = ['http://*', 'https://*']
-CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:1333', 'http://localhost:1333']
+#CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:1333', 'http://localhost:1333']
 #APPEND_SLASH = False
+
+ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS =1
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+ACCOUNT_LOGIN_ATTEMPTS_LIMIT = 5
+ACCOUNT_LOGIN_ATTEMPTS_TIMEOUT = 86400 # 1 day in seconds
+ACCOUNT_LOGOUT_REDIRECT_URL ='/accounts/login/'
+LOGIN_REDIRECT_URL = '/accounts/email/' # default to /accounts/profile
 
 # Provider specific settings
 SOCIALACCOUNT_PROVIDERS = {
