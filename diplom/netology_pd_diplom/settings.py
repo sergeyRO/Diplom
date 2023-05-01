@@ -78,8 +78,8 @@ AUTHENTICATION_BACKENDS = [
 
 
 CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:1333']
-#APPEND_SLASH = False
-#LOGIN_REDIRECT_URL = "/"
+APPEND_SLASH = False
+LOGIN_REDIRECT_URL = "/"
 # Provider specific settings
 SOCIALACCOUNT_PROVIDERS = {
     'vk': {
@@ -96,16 +96,16 @@ SOCIALACCOUNT_PROVIDERS = {
             'key': '',
         },
     },
-    'google': {
-        'SCOPE': [
-            'profile',
-            'email',
-                 ],
-        'AUTH_PARAMS': {
-            'access_type': 'online',
-                        },
-        'OAUTH_PKCE_ENABLED': True,
-            }
+    # 'google': {
+    #     'SCOPE': [
+    #         'profile',
+    #         'email',
+    #              ],
+    #     'AUTH_PARAMS': {
+    #         'access_type': 'online',
+    #                     },
+    #     'OAUTH_PKCE_ENABLED': True,
+    #         }
 }
 
 MIDDLEWARE = [
