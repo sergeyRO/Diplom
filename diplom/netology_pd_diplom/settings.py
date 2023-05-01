@@ -77,9 +77,9 @@ AUTHENTICATION_BACKENDS = [
 # 'secret': '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',
 
 
-CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:1333']
-APPEND_SLASH = False
-LOGIN_REDIRECT_URL = "/"
+# CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:1333']
+# APPEND_SLASH = False
+# LOGIN_REDIRECT_URL = "/"
 # Provider specific settings
 SOCIALACCOUNT_PROVIDERS = {
     'vk': {
