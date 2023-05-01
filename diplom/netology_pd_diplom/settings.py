@@ -80,6 +80,7 @@ AUTHENTICATION_BACKENDS = [
 #CSRF_TRUSTED_ORIGINS = ['http://*', 'https://*']
 CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:1333']
 APPEND_SLASH = False
+#1
 # Provider specific settings
 SOCIALACCOUNT_PROVIDERS = {
     'vk': {
