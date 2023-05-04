@@ -84,21 +84,19 @@ ACCOUNT_EMAIL_VERIFICATION = 'none'
 
 # Provider specific settings
 SOCIALACCOUNT_PROVIDERS = {
-    # 'vk': {
-    #     'APP': {
-    #         'client_id': '51627324',
-    #         'secret': 'ZMi9eVl2leoHYTB3VJ4A',
-    #         'key': ''
-    #     }
-    # },
-    # 'github': {
-    #     'APP': {
-    #         'client_id': '8fc8f9ff3ba76f80f72a',
-    #         'secret': 'd1cb65d08f3899cee9487887224a59b77686782f',
-    #         'key': '',
-    #     },
-    # },
+    'vk': {
+        'APP': {
+            'client_id': '51627324',
+            'secret': 'ZMi9eVl2leoHYTB3VJ4A',
+            'key': '617d67ee617d67ee617d67ee26626ea2d26617d617d67ee05340d64b4f537b7e7b7cf47'
+        }
+    },
     'github': {
+        'APP': {
+            'client_id': '8fc8f9ff3ba76f80f72a',
+            'secret': 'd1cb65d08f3899cee9487887224a59b77686782f',
+            'key': '',
+        },
         'SCOPE': [
             'user',
             'repo',
@@ -106,10 +104,11 @@ SOCIALACCOUNT_PROVIDERS = {
         ],
     },
     'google': {
-        # 'SCOPE': [
-        #     'profile',
-        #     'email',
-        # ],
+        'APP': {
+            'client_id': '401297302695-3glah46fhsi5s04tmr5i1gbjnmps2l5f.apps.googleusercontent.com',
+            'secret': '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',
+            'key': '',
+        },
         'AUTH_PARAMS': {
             'access_type': 'online',
         },
