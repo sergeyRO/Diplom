@@ -44,6 +44,7 @@ class UserManager(BaseUserManager):
         return user
 
     def create_user(self, email, password=None, **extra_fields):
+        print('tyt')
         print(**extra_fields)
         extra_fields.setdefault('is_staff', False)
         extra_fields.setdefault('is_superuser', False)
