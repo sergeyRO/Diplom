@@ -8,9 +8,9 @@ from django_rest_passwordreset.tokens import get_token_generator
 from allauth.account.signals import user_signed_up
 from django.dispatch import receiver
 
-@receiver(user_signed_up, dispatch_uid="some.unique.string.id.for.allauth.user_signed_up")
-def user_signed_up_(request, user, **kwargs):
-    User.objects.filter(id=user.id).update(is_active=True)
+# @receiver(user_signed_up, dispatch_uid="some.unique.string.id.for.allauth.user_signed_up")
+# def user_signed_up_(request, user, **kwargs):
+#     User.objects.filter(id=user.id).update(is_active=True)
 
 
 
