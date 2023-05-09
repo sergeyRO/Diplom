@@ -8,9 +8,9 @@ from django_rest_passwordreset.tokens import get_token_generator
 from allauth.account.signals import user_signed_up
 from django.dispatch import receiver
 
-# @receiver(user_signed_up, dispatch_uid="some.unique.string.id.for.allauth.user_signed_up")
-# def user_signed_up_(request, user, **kwargs):
-#     User.objects.filter(id=user.id).update(is_active=True)
+@receiver(user_signed_up, dispatch_uid="some.unique.string.id.for.allauth.user_signed_up")
+def user_signed_up_(request, user, **kwargs):
+    User.objects.filter(id=user.id).update(is_active=True)
 
 
 
@@ -94,7 +94,7 @@ class User(AbstractUser):
     )
     is_active = models.BooleanField(
         _('active'),
-        default=True,
+        default=False,
         help_text=_(
             'Designates whether this user should be treated as active. '
             'Unselect this instead of deleting accounts.'
