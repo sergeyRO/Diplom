@@ -226,6 +226,7 @@ EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
 EMAIL_PORT = os.environ.get("EMAIL_PORT")
 EMAIL_USE_SSL = os.environ.get("EMAIL_USE_SSL")
 SERVER_EMAIL = os.environ.get("SERVER_EMAIL")
+DEFAULT_FROM_EMAIL = os.environ.get("SERVER_EMAIL")
 
 EMAIL_ADMIN = os.environ.get("EMAIL_ADMIN")
 # EMAIL_HOST = "smtp.mail.ru"
