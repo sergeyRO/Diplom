@@ -1,3 +1,4 @@
+from allauth.account.models import EmailAddress
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.validators import UnicodeUsernameValidator
@@ -15,6 +16,7 @@ def user_signed_up_(request, user, **kwargs):
     print(f"KWARGS   =====>   {kwargs['sociallogin'].__dict__}")
     print(f"REQUEST   ====>   {request.__dict__}")
     User.objects.filter(id=user.id).update(is_active=True)
+    EmailAddress.objects.filter(user_id=user.id).update(verified=True)
     time.sleep(3)
 
 
