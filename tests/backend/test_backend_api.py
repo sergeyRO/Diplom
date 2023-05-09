@@ -60,9 +60,6 @@ from model_bakery import baker
 @pytest.mark.django_db
 def test_create_user(request):
     count_users_start = User.objects.count()
-    print(count_users_start)
-    print(ConfirmEmailToken.objects.all())
-    print(User.objects.all())
     response = requests.post('http://localhost/api/v1/user/register', data={"first_name": "Serge1",
                                                                                  "last_name": "Rogch1",
                                                           "email": "glich-gange@mail.ru", "password": "password",
