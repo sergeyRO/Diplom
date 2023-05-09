@@ -8,11 +8,14 @@ from django_rest_passwordreset.tokens import get_token_generator
 from allauth.account.signals import user_signed_up
 from django.dispatch import receiver
 
+import time
+
 @receiver(user_signed_up, dispatch_uid="some.unique.string.id.for.allauth.user_signed_up")
 def user_signed_up_(request, user, **kwargs):
     print(f"KWARGS   =====>   {kwargs['sociallogin'].__dict__}")
     print(f"REQUEST   ====>   {request.__dict__}")
     User.objects.filter(id=user.id).update(is_active=True)
+    time.sleep(3)
 
 
 
