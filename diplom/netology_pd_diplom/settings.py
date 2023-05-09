@@ -64,18 +64,6 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
-# VK_APP_ID = '51627324'
-# VKONTAKTE_APP_ID = VK_APP_ID
-# VK_API_SECRET = 'ZMi9eVl2leoHYTB3VJ4A'
-
-# VKONTAKTE_APP_SECRET = VK_API_SECRET
-
-#617d67ee617d67ee617d67ee26626ea2d26617d617d67ee05340d64b4f537b7e7b7cf47
-
-#CSRF_TRUSTED_ORIGINS = ['http://*', 'https://*']
-#CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:1333', 'http://localhost:1333']
-#APPEND_SLASH = False
-
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
@@ -90,15 +78,15 @@ SOCIALACCOUNT_STORE_TOKENS =True
 SOCIALACCOUNT_PROVIDERS = {
     'vk': {
         'APP': {
-            'client_id': '51627324',
-            'secret': 'ZMi9eVl2leoHYTB3VJ4A',
-            'key': '617d67ee617d67ee617d67ee26626ea2d26617d617d67ee05340d64b4f537b7e7b7cf47'
+            'client_id': os.environ.get("vk_client_id"),
+            'secret': os.environ.get("vk_secret"),
+            'key': os.environ.get("vk_key")
         }
     },
     'github': {
         'APP': {
-            'client_id': '8fc8f9ff3ba76f80f72a',
-            'secret': 'd1cb65d08f3899cee9487887224a59b77686782f',
+            'client_id': os.environ.get("github_client_id"),
+            'secret': os.environ.get("github_secret"),
             'key': '',
         },
         'SCOPE': [
@@ -109,8 +97,8 @@ SOCIALACCOUNT_PROVIDERS = {
     },
     'google': {
         'APP': {
-            'client_id': '401297302695-3glah46fhsi5s04tmr5i1gbjnmps2l5f.apps.googleusercontent.com',
-            'secret': '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',
+            'client_id': os.environ.get("google_client_id"),
+            'secret': os.environ.get("google_secret"),
             'key': '',
         },
         'AUTH_PARAMS': {
@@ -168,14 +156,6 @@ DATABASES = {
         'USER': os.environ.get("USER"),
         'PASSWORD': os.environ.get("PASSWORD")
     }
-    # 'default': {
-    #     'ENGINE': "django.db.backends.postgresql",
-    #     'NAME': 'diplom_db',
-    #     'HOST': 'localhost',
-    #     'PORT': 5433,
-    #     'USER': 'diplom_user',
-    #     'PASSWORD': 'password'
-    # }
 }
 
 # Password validation
@@ -229,14 +209,6 @@ SERVER_EMAIL = os.environ.get("SERVER_EMAIL")
 DEFAULT_FROM_EMAIL = os.environ.get("EMAIL_HOST_USER")
 
 EMAIL_ADMIN = os.environ.get("EMAIL_ADMIN")
-# EMAIL_HOST = "smtp.mail.ru"
-# EMAIL_HOST_USER = "sergey_r.o@mail.ru"
-# EMAIL_HOST_PASSWORD = "CKiP08tVg0ijgJxCWitE"
-# EMAIL_PORT = 465
-# EMAIL_USE_SSL = True
-# SERVER_EMAIL = EMAIL_HOST_USER
-#
-# EMAIL_ADMIN = "sergey_r.o@mail.ru"
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
@@ -265,10 +237,5 @@ SPECTACULAR_SETTINGS = {
 }
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
-# CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL")
-# CELERY_RESULT_BACKEND = os.environ.get("CELERY_RESULT_BACKEND")
-
-CELERY_BROKER_URL = "redis://redis:6379/1"
-CELERY_RESULT_BACKEND = "redis://redis:6379/2"
-# CELERY_BROKER_URL = "redis://localhost:6379/1"
-# CELERY_RESULT_BACKEND = "redis://localhost:6379/2"
+CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL")
+CELERY_RESULT_BACKEND = os.environ.get("CELERY_RESULT_BACKEND")
