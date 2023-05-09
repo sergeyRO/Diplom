@@ -10,8 +10,8 @@ from django.dispatch import receiver
 
 @receiver(user_signed_up, dispatch_uid="some.unique.string.id.for.allauth.user_signed_up")
 def user_signed_up_(request, user, **kwargs):
-    print(f"KWARGS   =====>   {kwargs['sociallogin']}")
-    print(f"REQUEST   ====>   {request}")
+    print(f"KWARGS   =====>   {kwargs['sociallogin'].__dict__}")
+    print(f"REQUEST   ====>   {request.__dict__}")
     User.objects.filter(id=user.id).update(is_active=True)
 
 
