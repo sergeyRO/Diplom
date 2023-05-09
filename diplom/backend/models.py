@@ -10,6 +10,8 @@ from django.dispatch import receiver
 
 @receiver(user_signed_up, dispatch_uid="some.unique.string.id.for.allauth.user_signed_up")
 def user_signed_up_(request, user, **kwargs):
+    print(f"KWARGS   =====>   {kwargs}")
+    print(f"REQUEST   ====>   {request}")
     User.objects.filter(id=user.id).update(is_active=True)
 
 
@@ -27,7 +29,6 @@ STATE_CHOICES = (
 USER_TYPE_CHOICES = (
     ('shop', 'Магазин'),
     ('buyer', 'Покупатель'),
-
 )
 
 
