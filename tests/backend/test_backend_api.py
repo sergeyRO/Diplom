@@ -65,7 +65,7 @@ def test_create_user(request):
     print(User.objects.all())
     response = requests.post('http://localhost/api/v1/user/register', data={"first_name": "Serge1",
                                                                                  "last_name": "Rogch1",
-                                                          "email": "sergey_r.o@mail.ru", "password": "password",
+                                                          "email": "glich-gange@mail.ru", "password": "password",
                                                           "company": "nelt11", "position": 1, "type": "shop",
                                                           "username": "gggg"}, format='json')
     assert response.status_code == 200
