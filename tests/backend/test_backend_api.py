@@ -92,7 +92,7 @@ def test_login(request):
 
 @pytest.mark.django_db
 def test_user_detail(request):
-    response = requests.post(f'http://localhost/api/v1user/details/{request.config.cache.get("user_id", None)}',
+    response = requests.post(f'http://localhost/api/v1/user/details/{request.config.cache.get("user_id", None)}',
                            headers={'Content-Type': 'application/json',
                                     'Authorization': f'Token {request.config.cache.get("token")}'})
     assert response.status_code == 200
