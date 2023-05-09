@@ -63,7 +63,7 @@ def test_create_user(request):
     print(count_users_start)
     print(ConfirmEmailToken.objects.all())
     print(User.objects.all())
-    response = requests.post('http://127.0.0.1:1333/api/v1/user/register', data={"first_name": "Serge1",
+    response = requests.post('http://localhost/api/v1/user/register', data={"first_name": "Serge1",
                                                                                  "last_name": "Rogch1",
                                                           "email": "sergey_r.o@mail.ru", "password": "password",
                                                           "company": "nelt11", "position": 1, "type": "shop",
@@ -77,14 +77,14 @@ def test_create_user(request):
 
 @pytest.mark.django_db
 def test_confirm(request):
-    response = requests.post(f'http://127.0.0.1:1333/api/v1/user/register/confirm', data={'token': request.config.cache.get('token_key', None),
+    response = requests.post(f'http://localhost/api/v1/user/register/confirm', data={'token': request.config.cache.get('token_key', None),
                                                                     'email': request.config.cache.get('email', None)},
                             format='json')
     assert response.status_code == 200
 
 @pytest.mark.django_db
 def test_login(request):
-    response = requests.post(f'http://127.0.0.1:1333/api/v1/user/login', data={"password": "password",
+    response = requests.post(f'http://localhost/api/v1/user/login', data={"password": "password",
                                                         "email": "sergey_r.o@mail.ru"},
                            format='json')
     assert response.status_code == 200
@@ -92,7 +92,7 @@ def test_login(request):
 
 @pytest.mark.django_db
 def test_user_detail(request):
-    response = requests.post(f'http://127.0.0.1:1333/api/v1user/details/{request.config.cache.get("user_id", None)}',
+    response = requests.post(f'http://localhost/api/v1user/details/{request.config.cache.get("user_id", None)}',
                            headers={'Content-Type': 'application/json',
                                     'Authorization': f'Token {request.config.cache.get("token")}'})
     assert response.status_code == 200
