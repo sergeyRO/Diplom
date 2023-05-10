@@ -67,7 +67,7 @@ def test_create_user(request):
                                                                              "company": "nelt11",
                                                                              "position": 1,
                                                                              "type": "shop",
-                                                                             "username": "gggg"})
+                                                                             "username": "gggg"},  verify=False, timeout=30)
     assert response.status_code == 200
     assert User.objects.count() == count_users_start + 1
     request.config.cache.set('token_key', response.key)
