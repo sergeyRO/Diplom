@@ -8,9 +8,9 @@ from backend.models import User, Shop, Category, \
 from model_bakery import baker
 
 
-@pytest.fixture
-def client():
-    return APIClient()
+# @pytest.fixture
+# def client():
+#     return APIClient()
 
 
 # @pytest.fixture
@@ -58,22 +58,22 @@ def client():
 
 
 @pytest.mark.django_db
-def test_create_user(client):
+def test_create_user(request):
     count_users_start = User.objects.count()
-    response = client.post('http://localhost/api/v1/user/register/', data={"first_name": "Serge1",
+    response = requests.post('http://localhost/api/v1/user/register', data={"first_name": "Serge1",
                                                                              "last_name": "Rogch1",
                                                                              "email": "glich-gange@mail.ru",
                                                                              "password": "password",
                                                                              "company": "nelt11",
                                                                              "position": 1,
                                                                              "type": "shop",
-                                                                             "username": "gggg"}, format='json')
+                                                                             "username": "gggg"})
     assert response.status_code == 200
     assert User.objects.count() == count_users_start + 1
-    client.config.cache.set('token_key', response.key)
-    client.config.cache.set('email', response.email)
-    client.config.cache.set('user_id', response.user_id)
-    print(client.config.cache.get('token_key', None))
+    request.config.cache.set('token_key', response.key)
+    request.config.cache.set('email', response.email)
+    request.config.cache.set('user_id', response.user_id)
+    print(request.config.cache.get('token_key', None))
 
 @pytest.mark.django_db
 def test_confirm(request):
