@@ -60,14 +60,16 @@ from model_bakery import baker
 @pytest.mark.django_db
 def test_create_user(request):
     count_users_start = User.objects.count()
-    response = requests.post('http://localhost/api/v1/user/register', data={"first_name": "Serge1",
+    headers = {'Content-type': 'application/json'}
+    response = requests.post('http://localhost/api/v1/user/register', json={"first_name": "Serge1",
                                                                              "last_name": "Rogch1",
                                                                              "email": "glich-gange@mail.ru",
                                                                              "password": "password",
                                                                              "company": "nelt11",
                                                                              "position": 1,
                                                                              "type": "shop",
-                                                                             "username": "gggg"},  verify=False, timeout=30)
+                                                                             "username": "gggg"},  headers=headers)
+    print(response)
     assert response.status_code == 200
     assert User.objects.count() == count_users_start + 1
     request.config.cache.set('token_key', response.key)
