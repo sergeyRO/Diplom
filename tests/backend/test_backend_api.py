@@ -8,11 +8,11 @@ from backend.models import User, Shop, Category, \
 from model_bakery import baker
 
 
-# @pytest.fixture
-# def client():
-#     return APIClient()
-#
-#
+@pytest.fixture
+def client():
+    return APIClient()
+
+
 # @pytest.fixture
 # def user():
 #     return baker.make(User)
@@ -58,19 +58,22 @@ from model_bakery import baker
 
 
 @pytest.mark.django_db
-def test_create_user(request):
+def test_create_user(client):
     count_users_start = User.objects.count()
-    response = requests.post('http://localhost/api/v1/user/register', data={"first_name": "Serge1",
-                                                                                 "last_name": "Rogch1",
-                                                          "email": "glich-gange@mail.ru", "password": "password",
-                                                          "company": "nelt11", "position": 1, "type": "shop",
-                                                          "username": "gggg"}, format='json')
+    response = client.post('http://localhost/api/v1/user/register/', data={"first_name": "Serge1",
+                                                                             "last_name": "Rogch1",
+                                                                             "email": "glich-gange@mail.ru",
+                                                                             "password": "password",
+                                                                             "company": "nelt11",
+                                                                             "position": 1,
+                                                                             "type": "shop",
+                                                                             "username": "gggg"}, format='json')
     assert response.status_code == 200
     assert User.objects.count() == count_users_start + 1
-    request.config.cache.set('token_key', response.key)
-    request.config.cache.set('email', response.email)
-    request.config.cache.set('user_id', response.user_id)
-
+    client.config.cache.set('token_key', response.key)
+    client.config.cache.set('email', response.email)
+    client.config.cache.set('user_id', response.user_id)
+    print(client.config.cache.get('token_key', None))
 
 @pytest.mark.django_db
 def test_confirm(request):
