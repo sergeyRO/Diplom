@@ -13,6 +13,11 @@ def client():
     return APIClient()
 
 @pytest.mark.django_db
+def test_user_admin():
+    admin = User.objects.get(email='sergey_r.o@mail.ru')
+    assert admin.is_superuser
+
+@pytest.mark.django_db
 def test_create_user(client, request):
     count_users_start = User.objects.count()
     response = client.post(f'/api/v1/user/register', data={"first_name": "Serge1",
