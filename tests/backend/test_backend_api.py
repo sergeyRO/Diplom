@@ -15,27 +15,28 @@ def client():
 @pytest.mark.django_db
 def test_user_admin():
 
-    User.objects.create(first_name="Serge1",last_name="Rogch1",email="1sergey_r.o@mail.ru",password="password",
-            company="nelt11",position=1,type="admin",username="gggg",is_superuser=True,is_active=True)
+    User.objects.create(first_name="Serge11",last_name="Rogch11",email="1sergey_r.o@mail.ru",password="password1",
+            company="nelt111",position=2,type="admin",username="gggg",is_superuser=True,is_active=True)
 
     print(User.objects.count())
     admin = User.objects.get(email='1sergey_r.o@mail.ru')
     assert admin.is_superuser
 
-# @pytest.mark.django_db
-# def test_create_user(client, request):
-#     count_users_start = User.objects.count()
-#     response = client.post(f'/api/v1/user/register', data={"first_name": "Serge1",
-#                                                                              "last_name": "Rogch1",
-#                                                                              "email": "glich-gange@mail.ru",
-#                                                                              "password": "password",
-#                                                                              "company": "nelt11",
-#                                                                              "position": 1,
-#                                                                              "type": "shop",
-#                                                                              "username": "gggg"},  format='json')
-#     print(response)
-#     print(response.status_code)
-#     assert response.status_code == 200
+@pytest.mark.django_db
+def test_create_user(client, request):
+    count_users_start = User.objects.count()
+    response = client.post(f'/api/v1/user/register', data={"first_name": "Serge1",
+                                                                             "last_name": "Rogch1",
+                                                                             "email": "glich-gange@mail.ru",
+                                                                             "password": "password",
+                                                                             "company": "nelt11",
+                                                                             "position": 1,
+                                                                             "type": "shop",
+                                                                             "username": "gggg"},  format='json')
+    print(response)
+    print(response.status_code)
+    assert response.status_code == 200
+    assert User.objects.count() == count_users_start+1
     # assert User.objects.count() == count_users_start + 1
     # request.config.cache.set('token_key', response.key)
     # request.config.cache.set('email', response.email)
