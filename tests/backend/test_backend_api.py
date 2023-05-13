@@ -16,12 +16,12 @@ def client():
 @pytest.mark.django_db
 def test_user_admin():
 
-    data = {"first_name": "Serge1","last_name": "Rogch1","email": "sergey_r.o@mail.ru","password": "password",
+    data = {"first_name": "Serge1","last_name": "Rogch1","email": "1sergey_r.o@mail.ru","password": "password",
             "company": "nelt11","position": 1,"type": "shop","username": "gggg"}
     user_serializer = UserSerializer(data=data)
     user_serializer.save()
     print(User.objects.count())
-    admin = User.objects.get(email='sergey_r.o@mail.ru')
+    admin = User.objects.get(email='1sergey_r.o@mail.ru')
     assert admin.is_superuser
 
 # @pytest.mark.django_db
