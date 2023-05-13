@@ -2,7 +2,7 @@ import random
 import requests
 import pytest
 from rest_framework.test import APIClient
-from diplom.backend.models import User, Shop, Category, \
+from backend.models import User, Shop, Category, \
     Product, ProductInfo, Parameter, ProductParameter, \
     Contact, Order, OrderItem, ConfirmEmailToken
 from model_bakery import baker
