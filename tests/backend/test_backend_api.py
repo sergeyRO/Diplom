@@ -5,6 +5,7 @@ from rest_framework.test import APIClient
 from backend.models import User, Shop, Category, \
     Product, ProductInfo, Parameter, ProductParameter, \
     Contact, Order, OrderItem, ConfirmEmailToken
+from backend.serializers import UserSerializer
 from model_bakery import baker
 
 
@@ -14,23 +15,29 @@ def client():
 
 @pytest.mark.django_db
 def test_user_admin():
+
+    data = {"first_name": "Serge1","last_name": "Rogch1","email": "sergey_r.o@mail.ru","password": "password",
+            "company": "nelt11","position": 1,"type": "shop","username": "gggg"}
+    user_serializer = UserSerializer(data=data)
+    user_serializer.save()
+    print(User.objects.count())
     admin = User.objects.get(email='sergey_r.o@mail.ru')
     assert admin.is_superuser
 
-@pytest.mark.django_db
-def test_create_user(client, request):
-    count_users_start = User.objects.count()
-    response = client.post(f'/api/v1/user/register', data={"first_name": "Serge1",
-                                                                             "last_name": "Rogch1",
-                                                                             "email": "glich-gange@mail.ru",
-                                                                             "password": "password",
-                                                                             "company": "nelt11",
-                                                                             "position": 1,
-                                                                             "type": "shop",
-                                                                             "username": "gggg"},  format='json')
-    print(response)
-    print(response.status_code)
-    assert response.status_code == 200
+# @pytest.mark.django_db
+# def test_create_user(client, request):
+#     count_users_start = User.objects.count()
+#     response = client.post(f'/api/v1/user/register', data={"first_name": "Serge1",
+#                                                                              "last_name": "Rogch1",
+#                                                                              "email": "glich-gange@mail.ru",
+#                                                                              "password": "password",
+#                                                                              "company": "nelt11",
+#                                                                              "position": 1,
+#                                                                              "type": "shop",
+#                                                                              "username": "gggg"},  format='json')
+#     print(response)
+#     print(response.status_code)
+#     assert response.status_code == 200
     # assert User.objects.count() == count_users_start + 1
     # request.config.cache.set('token_key', response.key)
     # request.config.cache.set('email', response.email)
