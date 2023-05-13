@@ -38,7 +38,7 @@ def test_create_user(client, request):
                                                                              "position": 1,
                                                                              "type": "shop",
                                                                              "username": "gggg"})
-    print(response.data)
+    print(response.email)
     #response = view(request)
     print(response.status_code)
     assert response.status_code == 200
