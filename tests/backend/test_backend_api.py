@@ -2,7 +2,6 @@ import json
 import random
 import requests
 import pytest
-from aiohttp.web_routedef import view
 from rest_framework.test import APIClient, APIRequestFactory
 from backend.models import User, Shop, Category, \
     Product, ProductInfo, Parameter, ProductParameter, \
@@ -13,6 +12,8 @@ from model_bakery import baker
 # @pytest.fixture
 # def client():
 #     return APIClient()
+from backend.views import RegisterAccount
+
 
 @pytest.mark.django_db
 def test_user_admin():
@@ -27,6 +28,7 @@ def test_user_admin():
 @pytest.mark.django_db
 def test_create_user(client, request):
     count_users_start = User.objects.count()
+    view = RegisterAccount.as_view()
     client = APIRequestFactory(enforce_csrf_checks=True)
     request = client.post("/api/v1/user/register", {"first_name": "Serge1",
                                                                              "last_name": "Rogch1",
