@@ -26,15 +26,16 @@ def test_user_admin():
 @pytest.mark.django_db
 def test_create_user(client, request):
     count_users_start = User.objects.count()
-    response = client.post(f'/api/v1/user/register', json.dumps({"first_name": "Serge1",
+    response = client.post("/api/v1/user/register", {"first_name": "Serge1",
                                                                              "last_name": "Rogch1",
                                                                              "email": "glich-gange@mail.ru",
                                                                              "password": "password",
                                                                              "company": "nelt11",
                                                                              "position": 1,
                                                                              "type": "shop",
-                                                                             "username": "gggg"}), content_type='application/json')
+                                                                             "username": "gggg"})
     print(response)
+    response
     print(response.status_code)
     assert response.status_code == 200
     assert User.objects.count() == count_users_start+1
