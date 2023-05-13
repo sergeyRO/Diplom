@@ -2,7 +2,7 @@ import json
 import random
 import requests
 import pytest
-from rest_framework.test import APIClient, APIRequestFactory
+from rest_framework.test import APIClient, APIRequestFactory, RequestsClient
 from backend.models import User, Shop, Category, \
     Product, ProductInfo, Parameter, ProductParameter, \
     Contact, Order, OrderItem, ConfirmEmailToken
@@ -29,17 +29,17 @@ def test_user_admin():
 def test_create_user(client, request):
     count_users_start = User.objects.count()
     view = RegisterAccount.as_view()
-    client = APIRequestFactory(enforce_csrf_checks=True)
-    request = client.post("/api/v1/user/register", {"first_name": "Serge1",
+    client = RequestsClient()
+    response = client.post("http://localhost/api/v1/user/register", json={"first_name": "Serge1",
                                                                              "last_name": "Rogch1",
                                                                              "email": "glich-gange@mail.ru",
                                                                              "password": "password",
                                                                              "company": "nelt11",
                                                                              "position": 1,
                                                                              "type": "shop",
-                                                                             "username": "gggg"}, format='json')
+                                                                             "username": "gggg"})
     print(request)
-    response = view(request)
+    #response = view(request)
     print(response.status_code)
     assert response.status_code == 200
     assert response.email == 'glich-gange@mail.ru'
