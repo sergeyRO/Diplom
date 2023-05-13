@@ -7,12 +7,12 @@ from backend.models import User, Shop, Category, \
     Product, ProductInfo, Parameter, ProductParameter, \
     Contact, Order, OrderItem, ConfirmEmailToken
 from model_bakery import baker
+#from backend.views import RegisterAccount
 
+@pytest.fixture
+def client():
+    return APIClient()
 
-# @pytest.fixture
-# def client():
-#     return APIClient()
-from backend.views import RegisterAccount
 
 
 @pytest.mark.django_db
@@ -28,8 +28,8 @@ def test_user_admin():
 @pytest.mark.django_db
 def test_create_user(client, request):
     count_users_start = User.objects.count()
-    view = RegisterAccount.as_view()
-    client = RequestsClient()
+    #view = RegisterAccount.as_view()
+    #client = RequestsClient()
     response = client.post("http://localhost/api/v1/user/register", json={"first_name": "Serge1",
                                                                              "last_name": "Rogch1",
                                                                              "email": "glich-gange@mail.ru",
@@ -38,7 +38,7 @@ def test_create_user(client, request):
                                                                              "position": 1,
                                                                              "type": "shop",
                                                                              "username": "gggg"})
-    print(request)
+    print(response.data)
     #response = view(request)
     print(response.status_code)
     assert response.status_code == 200
