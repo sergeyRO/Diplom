@@ -227,6 +227,7 @@ REST_FRAMEWORK = {
         'anon': '10/minute',
     },
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'TEST_REQUEST_DEFAULT_FORMAT': 'json',
 }
 SPECTACULAR_SETTINGS = {
     'TITLE': 'API v0.1',
