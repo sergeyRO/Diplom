@@ -30,7 +30,7 @@ def test_create_user(client, request):
     count_users_start = User.objects.count()
     view = RegisterAccount.as_view()
     client = RequestsClient()
-    response = client.post("/api/v1/user/register", json={"first_name": "Serge1",
+    response = client.post("http://localhost/api/v1/user/register", json={"first_name": "Serge1",
                                                                              "last_name": "Rogch1",
                                                                              "email": "glich-gange@mail.ru",
                                                                              "password": "password",
