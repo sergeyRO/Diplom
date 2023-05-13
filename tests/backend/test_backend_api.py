@@ -30,7 +30,7 @@ def test_create_user(client, request):
     count_users_start = User.objects.count()
     view = RegisterAccount.as_view()
     client = RequestsClient()
-    response = client.post("http://localhost/api/v1/user/register", json={"first_name": "Serge1",
+    response = client.post("/api/v1/user/register", json={"first_name": "Serge1",
                                                                              "last_name": "Rogch1",
                                                                              "email": "glich-gange@mail.ru",
                                                                              "password": "password",
@@ -42,7 +42,7 @@ def test_create_user(client, request):
     #response = view(request)
     print(response.status_code)
     assert response.status_code == 200
-    assert response.email == 'glich-gange@mail.ru'
+    assert response.data['email'] == 'glich-gange@mail.ru'
     assert User.objects.count() == count_users_start+1
     # assert User.objects.count() == count_users_start + 1
     # request.config.cache.set('token_key', response.key)
