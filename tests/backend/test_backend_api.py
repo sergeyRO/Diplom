@@ -44,7 +44,7 @@ def test_create_user(client, request):
     response = client.post("/api/v1/user/register", data={'first_name': 'Serge1',
                                                                              'last_name': 'Rogch1',
                                                                              'email': 'glich-gange@mail.ru',
-                                                                             'password': 'password1',
+                                                                             'password': 'Qwe123@rteA',
                                                                              'company': 'nelt11',
                                                                              'position': 1,
                                                                              'type': 'shop',
