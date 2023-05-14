@@ -18,7 +18,7 @@ def client():
 class Test:
     pytestmark = pytest.mark.django_db
 
-    def test_create_user(client, request):
+    def test_create_user(self, client, request):
         count_users_start = User.objects.count()
         response = client.post("/api/v1/user/register", data={'first_name': 'Serge1', 'last_name': 'Rogch1',
                                                               'email': 'glich-gange@mail.ru', 'password': 'Qwe123@rteA',
@@ -37,7 +37,7 @@ class Test:
         request.config.cache.set('email', response.json()['email'])
         request.config.cache.set('user_id', response.json()['user_id'])
 
-    def test_confirm(client, request):
+    def test_confirm(self, client, request):
         # print(f"TOKEN_KEY ===> {request.config.cache.get('token_key', None)}")
         # assert 200 == 200
         print(f"USER2_count  =====>>    {User.objects.count()}")
