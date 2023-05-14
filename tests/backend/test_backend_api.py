@@ -40,6 +40,7 @@ def test_create_user(client, request):
     print(response.json())
     print(response.json()['email'])
     print(response.status_code)
+    print(f"COUNT======>    {User.objects.count()}")
     assert response.status_code == 200
     assert User.objects.count() == count_users_start+1
     # assert User.objects.count() == count_users_start + 1
