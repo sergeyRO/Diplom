@@ -31,8 +31,8 @@ class Test:
         print(f"COUNT======>    {User.objects.count()}")
         print(f"key======>    {response.json()['key']}")
         print(f"USER1_count  =====>>    {User.objects.count()}")
-        assert response.status_code == 200
-        assert User.objects.count() == count_users_start + 1
+        assert response.status_code == 200, "Статус код"
+        assert User.objects.count() == count_users_start + 1, "Кол-во +1"
         request.config.cache.set('token_key', response.json()['key'])
         request.config.cache.set('email', response.json()['email'])
         request.config.cache.set('user_id', response.json()['user_id'])
