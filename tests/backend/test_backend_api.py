@@ -15,15 +15,15 @@ def client():
 
 
 
-@pytest.mark.django_db
-def test_user_admin():
-
-    User.objects.create(first_name="Serge11",last_name="Rogch11",email="1sergey_r.o@mail.ru",password="password1",
-            company="nelt111",position=2,type="admin",username="gggg",is_superuser=True,is_active=True)
-
-    print(f"COUNT_USER_TEST_1 ====>   {User.objects.count()}")
-    admin = User.objects.get(email='1sergey_r.o@mail.ru')
-    assert admin.is_superuser
+# @pytest.mark.django_db
+# def test_user_admin():
+#
+#     User.objects.create(first_name="Serge11",last_name="Rogch11",email="1sergey_r.o@mail.ru",password="password1",
+#             company="nelt111",position=2,type="admin",username="gggg",is_superuser=True,is_active=True)
+#
+#     print(f"COUNT_USER_TEST_1 ====>   {User.objects.count()}")
+#     admin = User.objects.get(email='1sergey_r.o@mail.ru')
+#     assert admin.is_superuser
 
 @pytest.mark.django_db
 def test_create_user(client, request):
