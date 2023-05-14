@@ -9,14 +9,15 @@ from backend.models import User, Shop, Category, \
 from model_bakery import baker
 #from backend.views import RegisterAccount
 
-pytestmark = pytest.mark.django_db
+#pytestmark = pytest.mark.django_db
 
 @pytest.fixture
 def client():
     return APIClient()
 
+@pytest.mark.django_db(True)
 class Test:
-    pytestmark = pytest.mark.django_db
+    #pytestmark = pytest.mark.django_db
 
     def test_create_user(self, client, request):
         count_users_start = User.objects.count()
