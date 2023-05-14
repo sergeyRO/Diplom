@@ -41,14 +41,14 @@ def test_create_user(client, request):
     #view = RegisterAccount.as_view()
     #client = RequestsClient()
 
-    response = client.post("/api/v1/user/register", json={'first_name': 'Serge1',
+    response = client.post("/api/v1/user/register", data={'first_name': 'Serge1',
                                                                              'last_name': 'Rogch1',
                                                                              'email': 'glich-gange@mail.ru',
                                                                              'password': 'password',
                                                                              'company': 'nelt11',
                                                                              'position': 1,
                                                                              'type': 'shop',
-                                                                             'username': 'gggg'})
+                                                                             'username': 'gggg'}, format='json')
     print(response)
     print(response.json())
     print(response.json()['email'])
