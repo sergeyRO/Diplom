@@ -50,6 +50,7 @@ def test_create_user(client, request):
     # request.config.cache.set('user_id', response.user_id)
     # print(request.config.cache.get('token_key', None))
 
+@pytest.mark.django_db
 def test_create_user1(client, request):
     count_users_start1 = User.objects.count()
     response = client.post("/api/v1/user/register", data={'first_name': 'Serge12',
