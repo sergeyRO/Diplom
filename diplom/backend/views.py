@@ -78,18 +78,15 @@ class RegisterAccount(APIView):
     """
     # Регистрация методом POST
     def post(self, request, *args, **kwargs):
-        # return JsonResponse({'first_name': request.data['first_name'],
-        #                      'last_name': request.data['last_name'],
-        #                      'email': request.data['email']})
         # проверяем обязательные аргументы
-        return JsonResponse({'first_name': {'first_name'}.issubset(request.data),
-                             'last_name': {'last_name'}.issubset(request.data),
-                             'email': {'email'}.issubset(request.data),
-                             'password': {'password'}.issubset(request.data),
-                             'company': {'company'}.issubset(request.data),
-                             'position': {'position'}.issubset(request.data),
-                             'type': {'type'}.issubset(request.data)
-                             })
+        # return JsonResponse({'first_name': {'first_name'}.issubset(request.data),
+        #                      'last_name': {'last_name'}.issubset(request.data),
+        #                      'email': {'email'}.issubset(request.data),
+        #                      'password': {'password'}.issubset(request.data),
+        #                      'company': {'company'}.issubset(request.data),
+        #                      'position': {'position'}.issubset(request.data),
+        #                      'type': {'type'}.issubset(request.data)
+        #                      })
         if {'first_name', 'last_name', 'email', 'password', 'company', 'position', 'type'}.issubset(request.data):
             errors = {}
 
