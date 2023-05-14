@@ -41,13 +41,13 @@ def test_create_user(client, request):
     print(response.json()['email'])
     print(response.status_code)
     print(f"COUNT======>    {User.objects.count()}")
-    print(f"key======>    {response.json()['email']}")
+    print(f"key======>    {response.json()['key']}")
     assert response.status_code == 200
     assert User.objects.count() == count_users_start+1
 
 
 def test_create_user1(client, request):
-    count_users_start = User.objects.count()
+    count_users_start1 = User.objects.count()
     response = client.post("/api/v1/user/register", data={'first_name': 'Serge1',
                                                           'last_name': 'Rogch1',
                                                           'email': 'glich-gange@mail.ru',
@@ -63,7 +63,7 @@ def test_create_user1(client, request):
     print(f"COUNT======>    {User.objects.count()}")
     print(f"key======>    {response.json()['email']}")
     assert response.status_code == 200
-    assert User.objects.count() == count_users_start + 1
+    assert User.objects.count() == count_users_start1 + 1
     # assert User.objects.count() == count_users_start + 1
     # request.config.cache.set('token_key', response.key)
     # request.config.cache.set('email', response.email)
