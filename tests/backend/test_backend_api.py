@@ -28,6 +28,13 @@ def test_user_admin():
 @pytest.mark.django_db
 def test_create_user(client, request):
     count_users_start = User.objects.count()
+    
+    User.objects.create(first_name="Serge11", last_name="Rogch11", email="1sergey_r.o@mail.ru", password="password1",
+                        company="nelt111", position=2, type="admin", username="gggg", is_superuser=True, is_active=True)
+
+    print(User.objects.count())
+    admin = User.objects.get(email='1sergey_r.o@mail.ru')
+
     print(f"COUNT ===>  {count_users_start}")
     admin = User.objects.get(email='1sergey_r.o@mail.ru')
     assert admin.is_superuser
