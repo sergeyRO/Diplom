@@ -13,3 +13,4 @@ pytest-django
 model_bakery
 drf-spectacular
 django-allauth
+pytest-cov
