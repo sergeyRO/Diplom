@@ -28,16 +28,20 @@ def test_user_admin():
 @pytest.mark.django_db
 def test_create_user(client, request):
     count_users_start = User.objects.count()
+    print(f"COUNT ===>  {count_users_start}")
+    admin = User.objects.get(email='1sergey_r.o@mail.ru')
+    assert admin.is_superuser
     #view = RegisterAccount.as_view()
     #client = RequestsClient()
-    response = client.post("http://localhost/api/v1/user/register", json={"first_name": "Serge1",
-                                                                             "last_name": "Rogch1",
-                                                                             "email": "glich-gange@mail.ru",
-                                                                             "password": "password",
-                                                                             "company": "nelt11",
-                                                                             "position": 1,
-                                                                             "type": "shop",
-                                                                             "username": "gggg"})
+
+    response = client.post("/api/v1/user/register", json={'first_name': 'Serge1',
+                                                                             'last_name': 'Rogch1',
+                                                                             'email': 'glich-gange@mail.ru',
+                                                                             'password': 'password',
+                                                                             'company': 'nelt11',
+                                                                             'position': 1,
+                                                                             'type': 'shop',
+                                                                             'username': 'gggg'})
     print(response)
     print(response.json())
     print(response.json()['email'])
