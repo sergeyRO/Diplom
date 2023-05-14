@@ -82,6 +82,8 @@ class RegisterAccount(APIView):
         #                      'last_name': request.data['last_name'],
         #                      'email': request.data['email']})
         # проверяем обязательные аргументы
+        return JsonResponse({'first_name': {'first_name'}.issubset(request.data),
+                             'last_name': {'last_name'}.issubset(request.data)})
         if {'first_name', 'last_name', 'email', 'password', 'company', 'position', 'type'}.issubset(request.data):
             errors = {}
 
