@@ -38,6 +38,8 @@ def test_create_user(client, request):
                                                                              "position": 1,
                                                                              "type": "shop",
                                                                              "username": "gggg"})
+    print(response)
+    print(response.json())
     print(response.json()['email'])
     #response = view(request)
     print(response.status_code)
