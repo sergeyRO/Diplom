@@ -38,7 +38,7 @@ def test_create_user(client, request):
     print(response.status_code)
     print(f"COUNT======>    {User.objects.count()}")
     print(f"key======>    {response.json()['key']}")
-    print(f"USER1  =====>>    {User.objects.get(email='glich-gange@mail.ru')}")
+    print(f"USER1_count  =====>>    {User.objects.count()}")
     assert response.status_code == 200
     assert User.objects.count() == count_users_start+1
     request.config.cache.set('token_key', response.json()['key'])
@@ -49,7 +49,7 @@ def test_create_user(client, request):
 def test_confirm(client, request):
     # print(f"TOKEN_KEY ===> {request.config.cache.get('token_key', None)}")
     # assert 200 == 200
-    print(f"USER2  =====>>    {User.objects.get(email='glich-gange@mail.ru')}")
+    print(f"USER2_count  =====>>    {User.objects.count()}")
     response = client.post('/api/v1/user/register/confirm',
                            data={'token': request.config.cache.get('token_key', None),
                                  'email': request.config.cache.get('email', None)},
