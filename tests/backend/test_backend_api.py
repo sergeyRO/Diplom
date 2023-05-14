@@ -49,12 +49,12 @@ def test_create_user(client, request):
 def test_confirm(client, request):
     # print(f"TOKEN_KEY ===> {request.config.cache.get('token_key', None)}")
     # assert 200 == 200
+    print(f"USER2  =====>>    {User.objects.get(email='glich-gange@mail.ru')}")
     response = client.post('/api/v1/user/register/confirm',
                            data={'token': request.config.cache.get('token_key', None),
                                  'email': request.config.cache.get('email', None)},
                            format='json')
     print(response.json())
-    print(f"USER2  =====>>    {User.objects.get(email='glich-gange@mail.ru')}")
     assert response.status_code == 200
 
 # @pytest.mark.django_db
