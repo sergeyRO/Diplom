@@ -45,18 +45,19 @@ def test_create_user(client, request):
     assert response.status_code == 200
     assert User.objects.count() == count_users_start+1
     request.config.cache.set('token_key', response.json()['key'])
-    # request.config.cache.set('email', response.email)
+    request.config.cache.set('email', response.json()['email'])
     # request.config.cache.set('user_id', response.user_id)
     # print(request.config.cache.get('token_key', None))
 
 @pytest.mark.django_db
-def test_confirm(request):
-    print(f"TOKEN_KEY ===> {request.config.cache.get('token_key', None)}")
-    assert 200 == 200
-    # response = requests.post(f'http://localhost/api/v1/user/register/confirm', data={'token': request.config.cache.get('token_key', None),
-    #                                                                 'email': request.config.cache.get('email', None)},
-    #                         format='json')
-    # assert response.status_code == 200
+def test_confirm(client, request):
+    # print(f"TOKEN_KEY ===> {request.config.cache.get('token_key', None)}")
+    # assert 200 == 200
+    response = client.post(f'http://localhost/api/v1/user/register/confirm', data={'token': request.config.cache.get('token_key', None),
+                                                                    'email': request.config.cache.get('email', None)},
+                            format='json')
+    print(response.json())
+    assert response.status_code == 200
 
 # @pytest.mark.django_db
 # def test_create_user1(client, request):
