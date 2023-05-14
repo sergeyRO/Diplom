@@ -28,35 +28,33 @@ def client():
 @pytest.mark.django_db
 def test_create_user(client, request):
     count_users_start = User.objects.count()
-    response = client.post("/api/v1/user/register", data={'first_name': 'Serge1',
-                                                                             'last_name': 'Rogch1',
-                                                                             'email': 'glich-gange@mail.ru',
-                                                                             'password': 'Qwe123@rteA',
-                                                                             'company': 'nelt11',
-                                                                             'position': 1,
-                                                                             'type': 'shop',
-                                                                             'username': 'gggg'}, format='json')
+    response = client.post("/api/v1/user/register", data={'first_name': 'Serge1', 'last_name': 'Rogch1',
+                                                          'email': 'glich-gange@mail.ru', 'password': 'Qwe123@rteA',
+                                                          'company': 'nelt11', 'position': 1, 'type': 'shop',
+                                                          'username': 'gggg'}, format='json')
     print(response)
     print(response.json())
     print(response.json()['email'])
     print(response.status_code)
     print(f"COUNT======>    {User.objects.count()}")
     print(f"key======>    {response.json()['key']}")
+    print(f"USER1  =====>>    {User.objects.get(email='glich-gange@mail.ru')}")
     assert response.status_code == 200
     assert User.objects.count() == count_users_start+1
     request.config.cache.set('token_key', response.json()['key'])
     request.config.cache.set('email', response.json()['email'])
-    # request.config.cache.set('user_id', response.user_id)
-    # print(request.config.cache.get('token_key', None))
+    request.config.cache.set('user_id', response.json()['user_id'])
 
 @pytest.mark.django_db
 def test_confirm(client, request):
     # print(f"TOKEN_KEY ===> {request.config.cache.get('token_key', None)}")
     # assert 200 == 200
-    response = client.post(f'http://localhost/api/v1/user/register/confirm', data={'token': request.config.cache.get('token_key', None),
-                                                                    'email': request.config.cache.get('email', None)},
-                            format='json')
+    response = client.post('/api/v1/user/register/confirm',
+                           data={'token': request.config.cache.get('token_key', None),
+                                 'email': request.config.cache.get('email', None)},
+                           format='json')
     print(response.json())
+    print(f"USER2  =====>>    {User.objects.get(email='glich-gange@mail.ru')}")
     assert response.status_code == 200
 
 # @pytest.mark.django_db
