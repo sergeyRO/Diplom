@@ -52,7 +52,7 @@ def user_login(client, user, user_confirm):
 @pytest.mark.django_db(True)
 class Test:
 
-    def test_create_user(self, user):
+    def test_create_user(self, client, user):
         count_users_start = User.objects.count()
         response = client.post("/api/v1/user/register", data={'first_name': 'Serge2', 'last_name': 'Rogch2',
                                                               'email': 'sergey_r.o@mail.ru', 'password': '@Qwe123@rteA',
