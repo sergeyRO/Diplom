@@ -47,10 +47,11 @@ def user_login(client, user):
 @pytest.mark.django_db(True)
 class Test:
 
-    def test_create_user(self, user, request):
+    def test_create_user(self, user):
         count_users_start = User.objects.count()
         print(f"START_COUNT ===>   {count_users_start}")
         new_user = user
+        print(f"USER ====>  {new_user}")
         #assert request.config.cache.get('status_code', None) == 200, "Статус код"
         assert new_user['status_code'] == 200, "Статус код"
         assert User.objects.count() == count_users_start + 1, "Кол-во +1"
@@ -71,7 +72,7 @@ class Test:
 
     def test_login(self, user_login):
         response = user_login
-        print(f"TOKEN ---> {response.json()['Token']}")
+        print(f"TOKEN ---> {response.json()}")
         assert response.status_code == 200
 
 
