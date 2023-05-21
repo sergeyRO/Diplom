@@ -86,10 +86,10 @@ class Test:
         assert response.status_code == 200
         assert response.json()['Status'] == True
 
-    def test_user_detail(self, user_login):
+    def test_user_detail(self, client, user_login):
         user = user_login
         print(f"TEST_detail======>>>       {user.json()}")
-        response = requests.get(f'/api/v1/user/details/{user.json()["user_id"]}',
+        response = client.get(f'/api/v1/user/details/{user.json()["user_id"]}',
                                headers={'Content-Type': 'application/json',
                                         'Authorization': f'Token {user.json()["Token"]}'})
         print(f"TEST_detail======>>>       {response.json()}")
