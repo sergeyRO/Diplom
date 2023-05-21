@@ -86,11 +86,10 @@ class Test:
         assert response.json()['Status'] == True
 
     def test_user_detail(self, user_login):
-        print(f"USER_LOGIN======>>>>     {user_login}")
-        response = requests.get(f'/api/v1/user/details/{user_login["user_id"]}',
+        response = requests.get(f'/api/v1/user/details/{user_login.json()["user_id"]}',
                                headers={'Content-Type': 'application/json',
-                                        'Authorization': f'Token {user_login["Token"]}'})
-        print(f"TEST_detail======>>>       {response}")
+                                        'Authorization': f'Token {user_login.json()["Token"]}'})
+        print(f"TEST_detail======>>>       {response.json()}")
         assert response.status_code == 200
 
 # @pytest.mark.django_db
