@@ -31,6 +31,7 @@ def user(client):
 
 @pytest.fixture
 def user_confirm(client, user):
+    user = user
     response = client.post('/api/v1/user/register/confirm',
                            data={'token': user['token_key'],
                                  'email': user['email']},
@@ -39,8 +40,7 @@ def user_confirm(client, user):
 
 @pytest.fixture
 def user_login(client, user, user_confirm):
-    user = user
-    resp = user_confirm(user)
+    resp = user_confirm
     if resp.json()['Status'] == True:
         print(f"Pass ====> {user['password']}    email===>  {user['email']}")
         response = client.post('/api/v1/user/login', data={"password": user['password'],
