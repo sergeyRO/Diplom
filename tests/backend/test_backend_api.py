@@ -38,10 +38,14 @@ def user_confirm(client, user):
     return response
 
 @pytest.fixture
-def user_login(client, user):
+def user_login(client, user, user_confirm):
+    user = user
+    user_confirm(user)
+    print(f"Pass ====> {user['password']}    email===>  {user['email']}")
     response = client.post('/api/v1/user/login', data={"password": user['password'],
                                                        "email": user['email']},
                              format='json')
+    print(f"RESP=====>   {response}")
     return response
 
 @pytest.mark.django_db(True)
@@ -67,6 +71,7 @@ class Test:
         #                              'email': request.config.cache.get('email', None)},
         #                        format='json')
         response = user_confirm
+        print(f"TEST2 ===> {response} and {response.status_code}")
         assert response.status_code == 200
         assert response.json()['Status'] == True
 
