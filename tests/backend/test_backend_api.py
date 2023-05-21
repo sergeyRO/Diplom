@@ -40,7 +40,7 @@ def user_confirm(client, user):
 
 @pytest.fixture
 def user_login(client, user, user_confirm):
-    resp = user_confirm()
+    resp = user_confirm
     if resp.json()['Status'] == True:
         print(f"Pass ====> {user['password']}    email===>  {user['email']}")
         response = client.post('/api/v1/user/login', data={"password": user['password'],
