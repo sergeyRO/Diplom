@@ -46,7 +46,8 @@ def user_login(client, user, user_confirm):
         response = client.post('/api/v1/user/login', data={"password": user['password'],
                                                            "email": user['email']},
                                  format='json')
-        response['user_id'] = user['user_id']
+        print(f"USERRRRRR=====>>>   {user['user_id']}")
+        response.json()['user_id'] = user['user_id']
         print(f"RESP=====>   {response}   ----->>>    {response.json()}")
         return response
 
