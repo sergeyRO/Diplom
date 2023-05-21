@@ -31,7 +31,7 @@ def user(client):
 
 @pytest.fixture
 def user_confirm(client, user):
-    user = user()
+    user = user
     response = client.post('/api/v1/user/register/confirm',
                            data={'token': user['token_key'],
                                  'email': user['email']},
@@ -54,13 +54,12 @@ class Test:
 
     def test_create_user(self, user):
         count_users_start = User.objects.count()
-        print(f"START_COUNT ===>   {count_users_start}")
-        us = User.objects.get()
-        print(f"USER FIRST ====>              {us}")
-        new_user = user
-        print(f"USER ====>  {new_user}")
+        response = client.post("/api/v1/user/register", data={'first_name': 'Serge2', 'last_name': 'Rogch2',
+                                                              'email': 'sergey_r.o@mail.ru', 'password': '@Qwe123@rteA',
+                                                              'company': 'nelt', 'position': 2, 'type': 'shop',
+                                                              'username': 'gli'}, format='json')
         #assert request.config.cache.get('status_code', None) == 200, "Статус код"
-        assert new_user['status_code'] == 200, "Статус код"
+        assert response.status_code == 200, "Статус код"
         assert User.objects.count() == count_users_start + 1, "Кол-во +1"
         # request.config.cache.set('token_key', response.json()['key'])
         # request.config.cache.set('email', response.json()['email'])
