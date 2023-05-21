@@ -46,6 +46,7 @@ def user_login(client, user, user_confirm):
         response = client.post('/api/v1/user/login', data={"password": user['password'],
                                                            "email": user['email']},
                                  format='json')
+        response['user_id'] = user['user_id']
         print(f"RESP=====>   {response}")
         return response
 
@@ -81,16 +82,15 @@ class Test:
         response = user_login
         print(f"TOKEN ---> {response.json()}")
         assert response.status_code == 200
+        assert response.json()['Status'] == True
 
+    def test_user_detail(self, user_login, request):
+        response = requests.get(f'/api/v1/user/details/{user_login["user_id"]}',
+                               headers={'Content-Type': 'application/json',
+                                        'Authorization': f'Token {user_login["Token"]}'})
+        print(f"TEST_detail======>>>       {response}")
+        assert response.status_code == 200
 
-# @pytest.mark.django_db
-# def test_login(request):
-#     response = requests.post(f'http://localhost/api/v1/user/login', data={"password": "password",
-#                                                         "email": "sergey_r.o@mail.ru"},
-#                            format='json')
-#     assert response.status_code == 200
-#     request.config.cache.set('token', response.Token)
-#
 # @pytest.mark.django_db
 # def test_user_detail(request):
 #     response = requests.post(f'http://localhost/api/v1/user/details/{request.config.cache.get("user_id", None)}',
