@@ -31,7 +31,7 @@ def user(client):
 
 @pytest.fixture
 def user_confirm(client, user):
-    user = user
+    user = user()
     response = client.post('/api/v1/user/register/confirm',
                            data={'token': user['token_key'],
                                  'email': user['email']},
@@ -40,7 +40,7 @@ def user_confirm(client, user):
 
 @pytest.fixture
 def user_login(client, user, user_confirm):
-    resp = user_confirm
+    resp = user_confirm()
     if resp.json()['Status'] == True:
         print(f"Pass ====> {user['password']}    email===>  {user['email']}")
         response = client.post('/api/v1/user/login', data={"password": user['password'],
@@ -55,6 +55,8 @@ class Test:
     def test_create_user(self, user):
         count_users_start = User.objects.count()
         print(f"START_COUNT ===>   {count_users_start}")
+        us = User.objects.get()
+        print(f"USER FIRST ====>              {us}")
         new_user = user
         print(f"USER ====>  {new_user}")
         #assert request.config.cache.get('status_code', None) == 200, "Статус код"
@@ -72,7 +74,7 @@ class Test:
         #                              'email': request.config.cache.get('email', None)},
         #                        format='json')
         response = user_confirm
-        print(f"TEST2 ===> {response} and {response.status_code}")
+        print(f"TEST2 ===> {response.json()['Status']} and {response.status_code}")
         assert response.status_code == 200
         assert response.json()['Status'] == True
 
