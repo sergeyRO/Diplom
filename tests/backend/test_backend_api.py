@@ -25,7 +25,8 @@ def user(client, request):
     # request.config.cache.set('token_key', response.json()['key'])
     # request.config.cache.set('email', response.json()['email'])
     # request.config.cache.set('user_id', response.json()['user_id'])
-    new_user['key'] = response.json()['key']
+    # request.config.cache.set('status_code', response.status_code)
+    new_user['token_key'] = response.json()['key']
     new_user['email'] = response.json()['email']
     new_user['user_id'] = response.json()['user_id']
     new_user['status_code'] = response.status_code
@@ -34,10 +35,11 @@ def user(client, request):
 @pytest.mark.django_db(True)
 class Test:
 
-    def test_create_user(self, client, user):
+    def test_create_user(self, client, user, request):
         count_users_start = User.objects.count()
         new_user = user
-        assert new_user.status_code == 200, "Статус код"
+        #assert request.config.cache.get('status_code', None) == 200, "Статус код"
+        assert new_user['status_code'] == 200, "Статус код"
         assert User.objects.count() == count_users_start + 1, "Кол-во +1"
         # count_users_start = User.objects.count()
         # response = client.post("/api/v1/user/register", data={'first_name': 'Serge1', 'last_name': 'Rogch1',
@@ -57,13 +59,18 @@ class Test:
         # request.config.cache.set('email', response.json()['email'])
         # request.config.cache.set('user_id', response.json()['user_id'])
 
-    def test_confirm(self, client, request):
+    def test_confirm(self, client, user, request):
         # print(f"TOKEN_KEY ===> {request.config.cache.get('token_key', None)}")
         # assert 200 == 200
         print(f"USER2_count  =====>>    {User.objects.count()}")
+        # response = client.post('/api/v1/user/register/confirm',
+        #                        data={'token': request.config.cache.get('token_key', None),
+        #                              'email': request.config.cache.get('email', None)},
+        #                        format='json')
+
         response = client.post('/api/v1/user/register/confirm',
-                               data={'token': request.config.cache.get('token_key', None),
-                                     'email': request.config.cache.get('email', None)},
+                               data={'token': user['token_key'],
+                                     'email': user['email']},
                                format='json')
         print(response.json())
         assert response.status_code == 200
