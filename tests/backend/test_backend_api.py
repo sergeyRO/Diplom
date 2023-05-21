@@ -15,28 +15,47 @@ from model_bakery import baker
 def client():
     return APIClient()
 
+@pytest.fixture
+def user(client, request):
+    new_user =dict()
+    response = client.post("/api/v1/user/register", data={'first_name': 'Serge1', 'last_name': 'Rogch1',
+                                                          'email': 'glich-gange@mail.ru', 'password': 'Qwe123@rteA',
+                                                          'company': 'nelt11', 'position': 1, 'type': 'shop',
+                                                          'username': 'gggg'}, format='json')
+    # request.config.cache.set('token_key', response.json()['key'])
+    # request.config.cache.set('email', response.json()['email'])
+    # request.config.cache.set('user_id', response.json()['user_id'])
+    new_user['key'] = response.json()['key']
+    new_user['email'] = response.json()['email']
+    new_user['user_id'] = response.json()['user_id']
+    new_user['status_code'] = response.status_code
+    return new_user
+
 @pytest.mark.django_db(True)
 class Test:
-    #pytestmark = pytest.mark.django_db
 
-    def test_create_user(self, client, request):
+    def test_create_user(self, client, user):
         count_users_start = User.objects.count()
-        response = client.post("/api/v1/user/register", data={'first_name': 'Serge1', 'last_name': 'Rogch1',
-                                                              'email': 'glich-gange@mail.ru', 'password': 'Qwe123@rteA',
-                                                              'company': 'nelt11', 'position': 1, 'type': 'shop',
-                                                              'username': 'gggg'}, format='json')
-        print(response)
-        print(response.json())
-        print(response.json()['email'])
-        print(response.status_code)
-        print(f"COUNT======>    {User.objects.count()}")
-        print(f"key======>    {response.json()['key']}")
-        print(f"USER1_count  =====>>    {User.objects.count()}")
-        assert response.status_code == 200, "Статус код"
+        new_user = user
+        assert new_user.status_code == 200, "Статус код"
         assert User.objects.count() == count_users_start + 1, "Кол-во +1"
-        request.config.cache.set('token_key', response.json()['key'])
-        request.config.cache.set('email', response.json()['email'])
-        request.config.cache.set('user_id', response.json()['user_id'])
+        # count_users_start = User.objects.count()
+        # response = client.post("/api/v1/user/register", data={'first_name': 'Serge1', 'last_name': 'Rogch1',
+        #                                                       'email': 'glich-gange@mail.ru', 'password': 'Qwe123@rteA',
+        #                                                       'company': 'nelt11', 'position': 1, 'type': 'shop',
+        #                                                       'username': 'gggg'}, format='json')
+        # print(response)
+        # print(response.json())
+        # print(response.json()['email'])
+        # print(response.status_code)
+        # print(f"COUNT======>    {User.objects.count()}")
+        # print(f"key======>    {response.json()['key']}")
+        # print(f"USER1_count  =====>>    {User.objects.count()}")
+        # assert response.status_code == 200, "Статус код"
+        # assert User.objects.count() == count_users_start + 1, "Кол-во +1"
+        # request.config.cache.set('token_key', response.json()['key'])
+        # request.config.cache.set('email', response.json()['email'])
+        # request.config.cache.set('user_id', response.json()['user_id'])
 
     def test_confirm(self, client, request):
         # print(f"TOKEN_KEY ===> {request.config.cache.get('token_key', None)}")
