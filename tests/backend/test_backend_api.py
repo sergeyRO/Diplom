@@ -88,13 +88,25 @@ class Test:
 
     def test_user_detail(self, client, user_login):
         user = user_login
-        print(f"TEST_detail======>>>       {user.json()}")
         response = client.get(f'/api/v1/user/details/{user.json()["user_id"]}',
                                headers={'Content-Type': 'application/json',
                                         'Authorization': f'Token {user.json()["Token"]}'})
-        print(f"TEST_detail======>>>       {response.json()}")
         assert response.status_code == 200
+        assert response.json()['email'] == user.json()['email']
 
+    def test_user_detail_update(self, client, user_login):
+        user = user_login
+        response = client.patch(f'/api/v1/user/details/{user.json()["user_id"]}',
+                               headers={'Content-Type': 'application/json',
+                                        'Authorization': f'Token {user.json()["Token"]}'},
+                                data={'first_name':'Serge1322',
+                                      'last_name':'Rogch1322',
+                                      'company':'nelt13122'}, format='json')
+        user_update = User.objects.filter(id=user.json()["user_id"]).first()
+        print(f"DDDD=====>    {user_update.json()}")
+        assert response.status_code == 200
+        assert response.json()['Status'] == True
+        assert user_update.json()['email'] == user.json()['email']
 # @pytest.mark.django_db
 # def test_user_detail(request):
 #     response = requests.post(f'http://localhost/api/v1/user/details/{request.config.cache.get("user_id", None)}',
