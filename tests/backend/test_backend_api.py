@@ -106,7 +106,7 @@ class Test:
         print(f"DDDD=====>    {user_update}")
         assert response.status_code == 200
         assert response.json()['Status'] == True
-        assert user_update.['email'] == user.json()['email']
+        assert user_update['email'] == user.json()['email']
 # @pytest.mark.django_db
 # def test_user_detail(request):
 #     response = requests.post(f'http://localhost/api/v1/user/details/{request.config.cache.get("user_id", None)}',
