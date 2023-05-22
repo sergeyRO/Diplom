@@ -103,10 +103,10 @@ class Test:
                                       'last_name':'Rogch1322',
                                       'company':'nelt13122'}, format='json')
         user_update = User.objects.filter(id=user.json()["user_id"]).first()
-        print(f"DDDD=====>    {user_update.json()}")
+        print(f"DDDD=====>    {user_update}")
         assert response.status_code == 200
         assert response.json()['Status'] == True
-        assert user_update.json()['email'] == user.json()['email']
+        assert user_update.['email'] == user.json()['email']
 # @pytest.mark.django_db
 # def test_user_detail(request):
 #     response = requests.post(f'http://localhost/api/v1/user/details/{request.config.cache.get("user_id", None)}',
