@@ -1,15 +1,8 @@
-import json
-import random
-import requests
 import pytest
-from rest_framework.test import APIClient, APIRequestFactory, RequestsClient
+from rest_framework.test import APIClient
 from backend.models import User, Shop, Category, \
     Product, ProductInfo, Parameter, ProductParameter, \
     Contact, Order, OrderItem, ConfirmEmailToken
-from model_bakery import baker
-#from backend.views import RegisterAccount
-
-#pytestmark = pytest.mark.django_db
 
 @pytest.fixture
 def client():
@@ -42,14 +35,11 @@ def user_confirm(client, user):
 def user_login(client, user, user_confirm):
     resp = user_confirm
     if resp.json()['Status'] == True:
-        print(f"Pass ====> {user['password']}    email===>  {user['email']}")
         response = client.post('/api/v1/user/login', data={"password": user['password'],
                                                            "email": user['email']},
                                  format='json')
-        print(f"USERRRRRR=====>>>   {user['user_id']}")
         response.json()['user_id'] = user['user_id']
         response.json()['email'] = user['email']
-        print(f"RESP=====>   {response}   ----->>>    {response.json()}")
         return response
 
 @pytest.mark.django_db(True)
@@ -69,20 +59,12 @@ class Test:
         # request.config.cache.set('user_id', response.json()['user_id'])
 
     def test_confirm(self, user_confirm):
-        # print(f"TOKEN_KEY ===> {request.config.cache.get('token_key', None)}")
-        print(f"USER2_count  =====>>    {User.objects.count()}")
-        # response = client.post('/api/v1/user/register/confirm',
-        #                        data={'token': request.config.cache.get('token_key', None),
-        #                              'email': request.config.cache.get('email', None)},
-        #                        format='json')
         response = user_confirm
-        print(f"TEST2 ===> {response.json()['Status']} and {response.status_code}")
         assert response.status_code == 200
         assert response.json()['Status'] == True
 
     def test_login(self, user_login):
         response = user_login
-        print(f"TOKEN ---> {response.json()}")
         assert response.status_code == 200
         assert response.json()['Status'] == True
 
@@ -103,13 +85,6 @@ class Test:
                                       'last_name':'Rogch1322',
                                       'company':'nelt13122'}, format='json')
         user_update = User.objects.filter(id=user.json()["user_id"]).first()
-        print(f"DDDD=====>    {user_update.email}")
         assert response.status_code == 200
         assert response.json()['Status'] == True
         assert user_update.email == user.json()['email']
-# @pytest.mark.django_db
-# def test_user_detail(request):
-#     response = requests.post(f'http://localhost/api/v1/user/details/{request.config.cache.get("user_id", None)}',
-#                            headers={'Content-Type': 'application/json',
-#                                     'Authorization': f'Token {request.config.cache.get("token")}'})
-#     assert response.status_code == 200
